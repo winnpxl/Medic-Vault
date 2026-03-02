@@ -13,7 +13,7 @@ async function startServer() {
   app.use(express.json());
 
   // Mock API for Patients
-  const patientsPath = path.join(__dirname, "src", "patients.json");
+  const patientsPath = path.join(__dirname, "..", "src", "patients.json");
   let patients = [];
   try {
     const fs = await import("fs/promises");
