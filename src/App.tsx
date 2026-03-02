@@ -23,6 +23,7 @@ import { CreateDepartmentModalContent } from './components/modals/CreateDepartme
 import { CreatePublicFolderModal } from './components/modals/CreatePublicFolderModal';
 import { NotificationPanel } from './components/modals/NotificationPanel';
 import { NotificationSettingsModalContent } from './components/modals/NotificationSettingsModal';
+import { EditPatientModal, CheckStatusModal, ArchivePatientModal, DeletePatientModal } from './components/patients/PatientActionModals';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -38,6 +39,7 @@ export default function App() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [toasts, setToasts] = useState<ToastProps[]>([]);
+  const [modalPatient, setModalPatient] = useState<Patient | null>(null);
 
   useEffect(() => {
     fetchPatients().then(setPatients);
@@ -65,6 +67,38 @@ export default function App() {
 
   const handleDeletePatient = (patientId: string) => {
     setPatients((prev) => prev.filter((p) => p.id !== patientId));
+  };
+
+  const openPatientModal = (patient: Patient, modalType: string) => {
+    setModalPatient(patient);
+    setActiveModal(modalType);
+  };
+
+  const closePatientModal = () => {
+    setModalPatient(null);
+    setActiveModal(null);
+  };
+
+  const handleEditPatient = (updatedPatient: Patient) => {
+    handleUpdatePatient(updatedPatient);
+    showToast('success', `Patient ${updatedPatient.name} updated successfully`);
+    closePatientModal();
+  };
+
+  const handleArchivePatientConfirm = () => {
+    if (modalPatient) {
+      handleArchivePatient(modalPatient.id);
+      showToast('success', `Patient ${modalPatient.name} archived successfully`);
+      closePatientModal();
+    }
+  };
+
+  const handleDeletePatientConfirm = () => {
+    if (modalPatient) {
+      handleDeletePatient(modalPatient.id);
+      showToast('success', `Patient ${modalPatient.name} deleted permanently`);
+      closePatientModal();
+    }
   };
 
   const filteredPatients = patients.filter((p) => {
@@ -144,6 +178,11 @@ export default function App() {
             onSearchChange={setSearchQuery}
             onStatusFilterChange={setStatusFilter}
             onPatientSelect={setSelectedPatient}
+            onShowToast={showToast}
+            onUpdatePatient={handleUpdatePatient}
+            onArchivePatient={handleArchivePatient}
+            onDeletePatient={handleDeletePatient}
+            onOpenModal={openPatientModal}
           />
         );
       case 'patients':
@@ -158,6 +197,7 @@ export default function App() {
             onUpdatePatient={handleUpdatePatient}
             onArchivePatient={handleArchivePatient}
             onDeletePatient={handleDeletePatient}
+            onOpenModal={openPatientModal}
           />
         );
       case 'departments':
@@ -242,6 +282,38 @@ export default function App() {
           <RightModal title="Notification Settings" onClose={() => setActiveModal(null)}>
             <NotificationSettingsModalContent />
           </RightModal>
+        )}
+        {modalPatient && activeModal === 'edit-patient' && (
+          <CenterModal title="Edit Patient Record" onClose={closePatientModal}>
+            <EditPatientModal
+              patient={modalPatient}
+              onClose={closePatientModal}
+              onSave={handleEditPatient}
+            />
+          </CenterModal>
+        )}
+        {modalPatient && activeModal === 'status-patient' && (
+          <CenterModal title="Check Patient Status" onClose={closePatientModal}>
+            <CheckStatusModal patient={modalPatient} onClose={closePatientModal} />
+          </CenterModal>
+        )}
+        {modalPatient && activeModal === 'archive-patient' && (
+          <CenterModal title="Archive Patient Record" onClose={closePatientModal}>
+            <ArchivePatientModal
+              patient={modalPatient}
+              onClose={closePatientModal}
+              onConfirm={handleArchivePatientConfirm}
+            />
+          </CenterModal>
+        )}
+        {modalPatient && activeModal === 'delete-patient' && (
+          <CenterModal title="Delete Patient Record" onClose={closePatientModal}>
+            <DeletePatientModal
+              patient={modalPatient}
+              onClose={closePatientModal}
+              onConfirm={handleDeletePatientConfirm}
+            />
+          </CenterModal>
         )}
       </AnimatePresence>
     </div>

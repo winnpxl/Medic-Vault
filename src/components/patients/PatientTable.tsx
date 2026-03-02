@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { AnimatePresence } from 'motion/react';
 import {
   ArrowUpDown,
   ChevronDown,
@@ -11,13 +9,6 @@ import {
 import { Patient } from '../../types';
 import { STATUS_COLORS } from '../../constants';
 import { PatientActionsDropdown } from './PatientActionsDropdown';
-import { CenterModal } from '../modals/CenterModal';
-import {
-  EditPatientModal,
-  CheckStatusModal,
-  ArchivePatientModal,
-  DeletePatientModal,
-} from './PatientActionModals';
 
 interface PatientTableProps {
   patients: Patient[];
@@ -27,49 +18,21 @@ interface PatientTableProps {
   onUpdatePatient: (patient: Patient) => void;
   onArchivePatient: (patientId: string) => void;
   onDeletePatient: (patientId: string) => void;
+  onOpenModal: (patient: Patient, modalType: string) => void;
+  currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
 }
 
 export function PatientTable({ 
   patients, 
   totalPatients, 
-  onPatientSelect, 
-  onShowToast,
-  onUpdatePatient,
-  onArchivePatient,
-  onDeletePatient
+  onPatientSelect,
+  onOpenModal,
+  currentPage = 1,
+  totalPages = 1,
+  onPageChange,
 }: PatientTableProps) {
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-
-  const handleEdit = (updatedPatient: Patient) => {
-    onUpdatePatient(updatedPatient);
-    onShowToast('success', `Patient ${updatedPatient.name} updated successfully`);
-    setActiveModal(null);
-    setSelectedPatient(null);
-  };
-
-  const handleArchive = () => {
-    if (selectedPatient) {
-      onArchivePatient(selectedPatient.id);
-      onShowToast('success', `Patient ${selectedPatient.name} archived successfully`);
-      setActiveModal(null);
-      setSelectedPatient(null);
-    }
-  };
-
-  const handleDelete = () => {
-    if (selectedPatient) {
-      onDeletePatient(selectedPatient.id);
-      onShowToast('success', `Patient ${selectedPatient.name} deleted permanently`);
-      setActiveModal(null);
-      setSelectedPatient(null);
-    }
-  };
-
-  const openModal = (patient: Patient, modalType: string) => {
-    setSelectedPatient(patient);
-    setActiveModal(modalType);
-  };
   return (
     <div className="glass-card overflow-hidden">
       <table className="w-full text-left text-sm">
@@ -120,10 +83,10 @@ export function PatientTable({
                 <PatientActionsDropdown 
                   patient={patient} 
                   onSelect={onPatientSelect}
-                  onEdit={() => openModal(patient, 'edit')}
-                  onCheckStatus={() => openModal(patient, 'status')}
-                  onArchive={() => openModal(patient, 'archive')}
-                  onDelete={() => openModal(patient, 'delete')}
+                  onEdit={() => onOpenModal(patient, 'edit-patient')}
+                  onCheckStatus={() => onOpenModal(patient, 'status-patient')}
+                  onArchive={() => onOpenModal(patient, 'archive-patient')}
+                  onDelete={() => onOpenModal(patient, 'delete-patient')}
                 />
               </td>
             </tr>
@@ -133,70 +96,71 @@ export function PatientTable({
 
       <div className="px-6 py-4 flex items-center justify-between border-t border-white/5 text-gray-500 text-xs">
         <div>
-          {patients.length} of {totalPatients} row(s) selected.
+          {patients.length} of {totalPatients} row(s) displayed.
         </div>
         <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <span>Rows per page</span>
-            <div className="flex items-center gap-1 bg-navy-900 border border-white/5 rounded px-2 py-1 cursor-pointer">
-              10 <ChevronDown className="w-3 h-3" />
-            </div>
-          </div>
-          <span>Page 1 of 1</span>
-          <div className="flex items-center gap-1">
-            <button className="p-1 hover:text-white disabled:opacity-30">
-              <ChevronsLeft className="w-4 h-4" />
-            </button>
-            <button className="p-1 hover:text-white disabled:opacity-30">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button className="p-1 hover:text-white disabled:opacity-30">
-              <ChevronRight className="w-4 h-4" />
-            </button>
-            <button className="p-1 hover:text-white disabled:opacity-30">
-              <ChevronsRight className="w-4 h-4" />
-            </button>
-          </div>
+          {onPageChange && totalPages > 1 && (
+            <>
+              <span>Page {currentPage} of {totalPages}</span>
+              <div className="flex items-center gap-1">
+                <button 
+                  onClick={() => onPageChange(1)}
+                  disabled={currentPage === 1}
+                  className="p-1 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronsLeft className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => onPageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="p-1 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => onPageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="p-1 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => onPageChange(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="p-1 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronsRight className="w-4 h-4" />
+                </button>
+              </div>
+            </>
+          )}
+          {(!onPageChange || totalPages <= 1) && (
+            <>
+              <div className="flex items-center gap-2">
+                <span>Rows per page</span>
+                <div className="flex items-center gap-1 bg-navy-900 border border-white/5 rounded px-2 py-1 cursor-pointer">
+                  10 <ChevronDown className="w-3 h-3" />
+                </div>
+              </div>
+              <span>Page 1 of 1</span>
+              <div className="flex items-center gap-1">
+                <button className="p-1 hover:text-white disabled:opacity-30">
+                  <ChevronsLeft className="w-4 h-4" />
+                </button>
+                <button className="p-1 hover:text-white disabled:opacity-30">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button className="p-1 hover:text-white disabled:opacity-30">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                <button className="p-1 hover:text-white disabled:opacity-30">
+                  <ChevronsRight className="w-4 h-4" />
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
-
-      <AnimatePresence>
-        {selectedPatient && activeModal === 'edit' && (
-          <CenterModal title="Edit Patient Record" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
-            <EditPatientModal
-              patient={selectedPatient}
-              onClose={() => { setActiveModal(null); setSelectedPatient(null); }}
-              onSave={handleEdit}
-            />
-          </CenterModal>
-        )}
-        {selectedPatient && activeModal === 'status' && (
-          <CenterModal title="Check Patient Status" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
-            <CheckStatusModal 
-              patient={selectedPatient} 
-              onClose={() => { setActiveModal(null); setSelectedPatient(null); }} 
-            />
-          </CenterModal>
-        )}
-        {selectedPatient && activeModal === 'archive' && (
-          <CenterModal title="Archive Patient Record" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
-            <ArchivePatientModal
-              patient={selectedPatient}
-              onClose={() => { setActiveModal(null); setSelectedPatient(null); }}
-              onConfirm={handleArchive}
-            />
-          </CenterModal>
-        )}
-        {selectedPatient && activeModal === 'delete' && (
-          <CenterModal title="Delete Patient Record" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
-            <DeletePatientModal
-              patient={selectedPatient}
-              onClose={() => { setActiveModal(null); setSelectedPatient(null); }}
-              onConfirm={handleDelete}
-            />
-          </CenterModal>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

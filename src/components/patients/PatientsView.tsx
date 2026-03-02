@@ -12,6 +12,7 @@ interface PatientsViewProps {
   onUpdatePatient: (patient: Patient) => void;
   onArchivePatient: (patientId: string) => void;
   onDeletePatient: (patientId: string) => void;
+  onOpenModal: (patient: Patient, modalType: string) => void;
 }
 
 export function PatientsView({
@@ -24,6 +25,7 @@ export function PatientsView({
   onUpdatePatient,
   onArchivePatient,
   onDeletePatient,
+  onOpenModal,
 }: PatientsViewProps) {
   return (
     <div className="flex-1 overflow-y-auto p-8 space-y-8">
@@ -54,6 +56,7 @@ export function PatientsView({
         onUpdatePatient={onUpdatePatient}
         onArchivePatient={onArchivePatient}
         onDeletePatient={onDeletePatient}
+        onOpenModal={onOpenModal}
       />
     </div>
   );

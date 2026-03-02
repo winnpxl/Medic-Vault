@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import {
   Users,
   Clock,
@@ -20,6 +20,11 @@ interface DashboardViewProps {
   onSearchChange: (query: string) => void;
   onStatusFilterChange: (status: string | null) => void;
   onPatientSelect: (patient: Patient) => void;
+  onShowToast: (type: 'success' | 'error' | 'info', message: string) => void;
+  onUpdatePatient: (patient: Patient) => void;
+  onArchivePatient: (patientId: string) => void;
+  onDeletePatient: (patientId: string) => void;
+  onOpenModal: (patient: Patient, modalType: string) => void;
 }
 
 export function DashboardView({
@@ -31,7 +36,24 @@ export function DashboardView({
   onSearchChange,
   onStatusFilterChange,
   onPatientSelect,
+  onShowToast,
+  onUpdatePatient,
+  onArchivePatient,
+  onDeletePatient,
+  onOpenModal,
 }: DashboardViewProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  
+  // Calculate pagination
+  const totalPages = Math.ceil(patients.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedPatients = patients.slice(startIndex, endIndex);
+
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+  };
   return (
     <div className="flex-1 overflow-y-auto p-8 space-y-8">
       <div className="flex items-center justify-between">
@@ -115,9 +137,17 @@ export function DashboardView({
         </div>
 
         <PatientTable
-          patients={patients}
+          patients={paginatedPatients}
           totalPatients={totalPatients}
           onPatientSelect={onPatientSelect}
+          onShowToast={onShowToast}
+          onUpdatePatient={onUpdatePatient}
+          onArchivePatient={onArchivePatient}
+          onDeletePatient={onDeletePatient}
+          onOpenModal={onOpenModal}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
         />
       </section>
     </div>
