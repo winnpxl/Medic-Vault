@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'motion/react';
 import { Patient, Stats } from './types';
 import { fetchPatients, fetchStats } from './api/patients';
@@ -9,22 +9,27 @@ import { PatientsView } from './components/patients/PatientsView';
 import { PatientProfile } from './components/patients/PatientProfile';
 import { DepartmentsView } from './components/departments/DepartmentsView';
 import { DepartmentDetailView } from './components/departments/DepartmentDetailView';
+import { FolderDetailView } from './components/departments/FolderDetailView';
 import { FoldersView } from './components/folders/FoldersView';
+import { PublicFolderDetailView } from './components/folders/PublicFolderDetailView';
 import { DefaultView } from './components/common/DefaultView';
+import { ToastContainer, ToastProps } from './components/common/Toast';
 import { CenterModal } from './components/modals/CenterModal';
 import { RightModal } from './components/modals/RightModal';
 import { FileUploadModalContent } from './components/modals/FileUploadModal';
 import { CreateFolderModalContent } from './components/modals/CreateFolderModal';
 import { AddUserModalContent } from './components/modals/AddUserModal';
 import { CreateDepartmentModalContent } from './components/modals/CreateDepartmentModal';
+import { CreatePublicFolderModal } from './components/modals/CreatePublicFolderModal';
 import { NotificationPanel } from './components/modals/NotificationPanel';
 import { NotificationSettingsModalContent } from './components/modals/NotificationSettingsModal';
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [deptTab, setDeptTab] = useState('Patients');
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+  const [selectedPublicFolder, setSelectedPublicFolder] = useState<{ name: string; files: number; expiry: string; views: number } | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -32,19 +37,35 @@ export default function App() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.remove('light-mode');
-    } else {
-      document.body.classList.add('light-mode');
-    }
-  }, [isDarkMode]);
+  const [toasts, setToasts] = useState<ToastProps[]>([]);
 
   useEffect(() => {
     fetchPatients().then(setPatients);
     fetchStats().then(setStats);
   }, []);
+
+  const showToast = (type: 'success' | 'error' | 'info', message: string) => {
+    const id = Date.now().toString();
+    setToasts((prev) => [...prev, { id, type, message, onClose: removeToast }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
+  const handleUpdatePatient = (updatedPatient: Patient) => {
+    setPatients((prev) =>
+      prev.map((p) => (p.id === updatedPatient.id ? updatedPatient : p))
+    );
+  };
+
+  const handleArchivePatient = (patientId: string) => {
+    setPatients((prev) => prev.filter((p) => p.id !== patientId));
+  };
+
+  const handleDeletePatient = (patientId: string) => {
+    setPatients((prev) => prev.filter((p) => p.id !== patientId));
+  };
 
   const filteredPatients = patients.filter((p) => {
     const query = searchQuery.toLowerCase();
@@ -63,12 +84,35 @@ export default function App() {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     setSelectedDept(null);
+    setSelectedFolder(null);
     setSelectedPatient(null);
+    setSelectedPublicFolder(null);
   };
 
   const renderContent = () => {
     if (selectedPatient) {
       return <PatientProfile patient={selectedPatient} onBack={() => setSelectedPatient(null)} />;
+    }
+
+    if (selectedPublicFolder) {
+      return (
+        <PublicFolderDetailView
+          folder={selectedPublicFolder}
+          onBack={() => setSelectedPublicFolder(null)}
+          onUploadFile={() => setActiveModal('file')}
+          onShowToast={showToast}
+        />
+      );
+    }
+
+    if (selectedFolder && selectedDept) {
+      return (
+        <FolderDetailView
+          folderName={selectedFolder}
+          departmentName={selectedDept}
+          onBack={() => setSelectedFolder(null)}
+        />
+      );
     }
 
     if (selectedDept) {
@@ -83,6 +127,7 @@ export default function App() {
           onDeptTabChange={setDeptTab}
           onSearchChange={setSearchQuery}
           onPatientSelect={setSelectedPatient}
+          onFolderSelect={setSelectedFolder}
         />
       );
     }
@@ -109,6 +154,10 @@ export default function App() {
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             onPatientSelect={setSelectedPatient}
+            onShowToast={showToast}
+            onUpdatePatient={handleUpdatePatient}
+            onArchivePatient={handleArchivePatient}
+            onDeletePatient={handleDeletePatient}
           />
         );
       case 'departments':
@@ -119,7 +168,12 @@ export default function App() {
           />
         );
       case 'folders':
-        return <FoldersView />;
+        return (
+          <FoldersView
+            onFolderSelect={setSelectedPublicFolder}
+            onShowToast={showToast}
+          />
+        );
       default:
         return <DefaultView activeTab={activeTab} />;
     }
@@ -130,9 +184,7 @@ export default function App() {
       <Sidebar
         activeTab={activeTab}
         selectedDept={selectedDept}
-        isDarkMode={isDarkMode}
         onTabChange={handleTabChange}
-        onDarkModeToggle={() => setIsDarkMode(!isDarkMode)}
         onModalOpen={setActiveModal}
       />
 
@@ -145,6 +197,8 @@ export default function App() {
 
         {renderContent()}
       </main>
+
+      <ToastContainer toasts={toasts} onClose={removeToast} />
 
       <AnimatePresence>
         {isNotificationsOpen && (
@@ -171,6 +225,17 @@ export default function App() {
         {activeModal === 'department' && (
           <CenterModal title="Create New Department" onClose={() => setActiveModal(null)}>
             <CreateDepartmentModalContent />
+          </CenterModal>
+        )}
+        {activeModal === 'public-folder' && (
+          <CenterModal title="Create Shareable Folder" onClose={() => setActiveModal(null)}>
+            <CreatePublicFolderModal
+              onClose={() => setActiveModal(null)}
+              onCreate={(folder) => {
+                showToast('success', `Folder "${folder.name}" created successfully`);
+                setActiveModal(null);
+              }}
+            />
           </CenterModal>
         )}
         {activeModal === 'notification-settings' && (

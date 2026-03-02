@@ -26,6 +26,7 @@ interface DepartmentDetailViewProps {
   onDeptTabChange: (tab: string) => void;
   onSearchChange: (query: string) => void;
   onPatientSelect: (patient: Patient) => void;
+  onFolderSelect: (folderName: string) => void;
 }
 
 export function DepartmentDetailView({
@@ -38,6 +39,7 @@ export function DepartmentDetailView({
   onDeptTabChange,
   onSearchChange,
   onPatientSelect,
+  onFolderSelect,
 }: DepartmentDetailViewProps) {
   const dept = DEPARTMENTS.find((d) => d.name === departmentName);
 
@@ -133,20 +135,26 @@ export function DepartmentDetailView({
             ].map((folder, i) => (
               <div
                 key={i}
-                className="glass-card p-6 hover:bg-white/5 transition-colors cursor-pointer group"
+                onClick={() => onFolderSelect(folder.name)}
+                className="glass-card p-6 hover:bg-white/5 transition-colors cursor-pointer group light-mode:hover:bg-gray-50"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-orange-primary/10 rounded-xl flex items-center justify-center text-orange-primary">
                     <FolderTree className="w-6 h-6" />
                   </div>
-                  <button className="p-1 text-gray-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="p-1 text-gray-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all light-mode:hover:text-gray-900"
+                  >
                     <MoreHorizontal className="w-4 h-4" />
                   </button>
                 </div>
                 <h4 className="font-bold mb-1">{folder.name}</h4>
                 <div className="flex items-center gap-3 text-xs text-gray-500">
                   <span>{folder.count} items</span>
-                  <span className="w-1 h-1 bg-gray-700 rounded-full"></span>
+                  <span className="w-1 h-1 bg-gray-700 rounded-full light-mode:bg-gray-400"></span>
                   <span>{folder.size}</span>
                 </div>
               </div>

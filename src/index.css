@@ -14,9 +14,35 @@
   body {
     @apply bg-navy-950 text-white font-sans antialiased transition-colors duration-200;
   }
-  
-  body.light-mode {
-    @apply bg-gray-50 text-gray-900;
+
+  /* Custom scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+
+  /* Checkbox styles */
+  input[type="checkbox"] {
+    @apply w-4 h-4 rounded border-2 border-gray-600 bg-transparent cursor-pointer transition-all;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input[type="checkbox"]:checked {
+    @apply bg-orange-primary border-orange-primary;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
   }
 }
 
@@ -25,32 +51,16 @@
     @apply bg-navy-900/50 border border-white/5 rounded-xl backdrop-blur-sm transition-colors;
   }
   
-  .light-mode .glass-card {
-    @apply bg-white border-gray-200 shadow-sm;
-  }
-  
   .sidebar-item {
     @apply flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors text-gray-400 hover:text-white hover:bg-white/5;
-  }
-  
-  .light-mode .sidebar-item {
-    @apply text-gray-500 hover:text-gray-900 hover:bg-gray-100;
   }
   
   .sidebar-item-active {
     @apply flex items-center gap-3 px-4 py-2.5 rounded-lg bg-white/10 text-white;
   }
-  
-  .light-mode .sidebar-item-active {
-    @apply bg-gray-200 text-gray-900;
-  }
 
   .input-field {
-    @apply w-full bg-navy-900/50 border border-white/5 rounded-lg py-2 px-4 text-sm focus:outline-none focus:border-orange-primary/50 transition-colors;
-  }
-
-  .light-mode .input-field {
-    @apply bg-white border-gray-300 text-gray-900 focus:border-orange-primary;
+    @apply w-full bg-navy-900/50 border border-white/5 rounded-lg py-2 px-4 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-orange-primary/50 transition-colors;
   }
 
   .btn-primary {
@@ -61,7 +71,24 @@
     @apply bg-white/5 border border-white/10 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-white/10 transition-colors;
   }
 
-  .light-mode .btn-secondary {
-    @apply bg-gray-100 border-gray-200 text-gray-900 hover:bg-gray-200;
+  /* Table styles */
+  table thead tr {
+    @apply border-white/5;
+  }
+
+  table tbody tr {
+    @apply border-white/5 hover:bg-white/5;
+  }
+
+  table th {
+    @apply text-gray-500;
+  }
+
+  table td {
+    @apply text-white;
+  }
+
+  table td.text-gray-400 {
+    @apply text-gray-400;
   }
 }

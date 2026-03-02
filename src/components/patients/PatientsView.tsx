@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search, Filter } from 'lucide-react';
 import { Patient } from '../../types';
 import { PatientTable } from './PatientTable';
@@ -9,6 +8,10 @@ interface PatientsViewProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onPatientSelect: (patient: Patient) => void;
+  onShowToast: (type: 'success' | 'error' | 'info', message: string) => void;
+  onUpdatePatient: (patient: Patient) => void;
+  onArchivePatient: (patientId: string) => void;
+  onDeletePatient: (patientId: string) => void;
 }
 
 export function PatientsView({
@@ -17,6 +20,10 @@ export function PatientsView({
   searchQuery,
   onSearchChange,
   onPatientSelect,
+  onShowToast,
+  onUpdatePatient,
+  onArchivePatient,
+  onDeletePatient,
 }: PatientsViewProps) {
   return (
     <div className="flex-1 overflow-y-auto p-8 space-y-8">
@@ -28,7 +35,7 @@ export function PatientsView({
             <input
               type="text"
               placeholder="Search all patients..."
-              className="bg-navy-900 border border-white/5 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none w-64"
+              className="bg-navy-900 border border-white/5 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-orange-primary w-64"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
             />
@@ -43,6 +50,10 @@ export function PatientsView({
         patients={patients}
         totalPatients={totalPatients}
         onPatientSelect={onPatientSelect}
+        onShowToast={onShowToast}
+        onUpdatePatient={onUpdatePatient}
+        onArchivePatient={onArchivePatient}
+        onDeletePatient={onDeletePatient}
       />
     </div>
   );

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ShieldCheck,
   ChevronDown,
   Plus,
   LogOut,
-  Moon,
   UserCircle,
   File,
   FolderTree,
@@ -15,18 +14,14 @@ import { SIDEBAR_ITEMS } from '../../constants';
 interface SidebarProps {
   activeTab: string;
   selectedDept: string | null;
-  isDarkMode: boolean;
   onTabChange: (tab: string) => void;
-  onDarkModeToggle: () => void;
   onModalOpen: (modal: string) => void;
 }
 
 export function Sidebar({
   activeTab,
   selectedDept,
-  isDarkMode,
   onTabChange,
-  onDarkModeToggle,
   onModalOpen,
 }: SidebarProps) {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -171,11 +166,6 @@ export function Sidebar({
             >
               {[
                 { label: 'Profile settings', icon: UserCircle, action: () => {} },
-                {
-                  label: `Switch to ${isDarkMode ? 'Light' : 'Dark'} Mode`,
-                  icon: Moon,
-                  action: onDarkModeToggle,
-                },
                 { label: 'Log out', icon: LogOut, danger: true, action: () => {} },
               ].map((item, i) => (
                 <button

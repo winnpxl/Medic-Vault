@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MoreHorizontal, Eye, Edit, CheckCircle, Archive, Trash2 } from 'lucide-react';
 import { Patient } from '../../types';
@@ -6,9 +6,20 @@ import { Patient } from '../../types';
 interface PatientActionsDropdownProps {
   patient: Patient;
   onSelect: (patient: Patient) => void;
+  onEdit: () => void;
+  onCheckStatus: () => void;
+  onArchive: () => void;
+  onDelete: () => void;
 }
 
-export function PatientActionsDropdown({ patient, onSelect }: PatientActionsDropdownProps) {
+export function PatientActionsDropdown({ 
+  patient, 
+  onSelect, 
+  onEdit,
+  onCheckStatus,
+  onArchive,
+  onDelete
+}: PatientActionsDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -34,11 +45,11 @@ export function PatientActionsDropdown({ patient, onSelect }: PatientActionsDrop
               className="absolute right-0 mt-2 w-48 bg-navy-900 border border-white/10 rounded-lg shadow-2xl z-50 overflow-hidden"
             >
               {[
-                { label: 'View Full Details', icon: Eye, action: () => onSelect(patient) },
-                { label: 'Edit', icon: Edit, action: () => {} },
-                { label: 'Check Status', icon: CheckCircle, action: () => {} },
-                { label: 'Archive', icon: Archive, action: () => {} },
-                { label: 'Delete', icon: Trash2, action: () => {}, danger: true },
+                { label: 'View Full Details', icon: Eye, action: () => { onSelect(patient); setIsOpen(false); } },
+                { label: 'Edit', icon: Edit, action: () => { onEdit(); setIsOpen(false); } },
+                { label: 'Check Status', icon: CheckCircle, action: () => { onCheckStatus(); setIsOpen(false); } },
+                { label: 'Archive', icon: Archive, action: () => { onArchive(); setIsOpen(false); } },
+                { label: 'Delete', icon: Trash2, action: () => { onDelete(); setIsOpen(false); }, danger: true },
               ].map((item, i) => (
                 <button
                   key={i}
@@ -48,7 +59,6 @@ export function PatientActionsDropdown({ patient, onSelect }: PatientActionsDrop
                   onClick={(e) => {
                     e.stopPropagation();
                     item.action();
-                    setIsOpen(false);
                   }}
                 >
                   <item.icon className="w-4 h-4" />

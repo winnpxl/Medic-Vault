@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState } from 'react';
+import { AnimatePresence } from 'motion/react';
 import {
   ArrowUpDown,
   ChevronDown,
@@ -10,14 +11,65 @@ import {
 import { Patient } from '../../types';
 import { STATUS_COLORS } from '../../constants';
 import { PatientActionsDropdown } from './PatientActionsDropdown';
+import { CenterModal } from '../modals/CenterModal';
+import {
+  EditPatientModal,
+  CheckStatusModal,
+  ArchivePatientModal,
+  DeletePatientModal,
+} from './PatientActionModals';
 
 interface PatientTableProps {
   patients: Patient[];
   totalPatients: number;
   onPatientSelect: (patient: Patient) => void;
+  onShowToast: (type: 'success' | 'error' | 'info', message: string) => void;
+  onUpdatePatient: (patient: Patient) => void;
+  onArchivePatient: (patientId: string) => void;
+  onDeletePatient: (patientId: string) => void;
 }
 
-export function PatientTable({ patients, totalPatients, onPatientSelect }: PatientTableProps) {
+export function PatientTable({ 
+  patients, 
+  totalPatients, 
+  onPatientSelect, 
+  onShowToast,
+  onUpdatePatient,
+  onArchivePatient,
+  onDeletePatient
+}: PatientTableProps) {
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+
+  const handleEdit = (updatedPatient: Patient) => {
+    onUpdatePatient(updatedPatient);
+    onShowToast('success', `Patient ${updatedPatient.name} updated successfully`);
+    setActiveModal(null);
+    setSelectedPatient(null);
+  };
+
+  const handleArchive = () => {
+    if (selectedPatient) {
+      onArchivePatient(selectedPatient.id);
+      onShowToast('success', `Patient ${selectedPatient.name} archived successfully`);
+      setActiveModal(null);
+      setSelectedPatient(null);
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedPatient) {
+      onDeletePatient(selectedPatient.id);
+      onShowToast('success', `Patient ${selectedPatient.name} deleted permanently`);
+      setActiveModal(null);
+      setSelectedPatient(null);
+    }
+  };
+
+  const openModal = (patient: Patient, modalType: string) => {
+    setSelectedPatient(patient);
+    setActiveModal(modalType);
+  };
   return (
     <div className="glass-card overflow-hidden">
       <table className="w-full text-left text-sm">
@@ -65,7 +117,14 @@ export function PatientTable({ patients, totalPatients, onPatientSelect }: Patie
               <td className="px-6 py-4">{patient.department}</td>
               <td className="px-6 py-4 text-gray-400">{patient.lastUpdated}</td>
               <td className="px-6 py-4 text-right">
-                <PatientActionsDropdown patient={patient} onSelect={onPatientSelect} />
+                <PatientActionsDropdown 
+                  patient={patient} 
+                  onSelect={onPatientSelect}
+                  onEdit={() => openModal(patient, 'edit')}
+                  onCheckStatus={() => openModal(patient, 'status')}
+                  onArchive={() => openModal(patient, 'archive')}
+                  onDelete={() => openModal(patient, 'delete')}
+                />
               </td>
             </tr>
           ))}
@@ -100,6 +159,44 @@ export function PatientTable({ patients, totalPatients, onPatientSelect }: Patie
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedPatient && activeModal === 'edit' && (
+          <CenterModal title="Edit Patient Record" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
+            <EditPatientModal
+              patient={selectedPatient}
+              onClose={() => { setActiveModal(null); setSelectedPatient(null); }}
+              onSave={handleEdit}
+            />
+          </CenterModal>
+        )}
+        {selectedPatient && activeModal === 'status' && (
+          <CenterModal title="Check Patient Status" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
+            <CheckStatusModal 
+              patient={selectedPatient} 
+              onClose={() => { setActiveModal(null); setSelectedPatient(null); }} 
+            />
+          </CenterModal>
+        )}
+        {selectedPatient && activeModal === 'archive' && (
+          <CenterModal title="Archive Patient Record" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
+            <ArchivePatientModal
+              patient={selectedPatient}
+              onClose={() => { setActiveModal(null); setSelectedPatient(null); }}
+              onConfirm={handleArchive}
+            />
+          </CenterModal>
+        )}
+        {selectedPatient && activeModal === 'delete' && (
+          <CenterModal title="Delete Patient Record" onClose={() => { setActiveModal(null); setSelectedPatient(null); }}>
+            <DeletePatientModal
+              patient={selectedPatient}
+              onClose={() => { setActiveModal(null); setSelectedPatient(null); }}
+              onConfirm={handleDelete}
+            />
+          </CenterModal>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
