@@ -1,0 +1,9 @@
+{
+  "name": "Medic Vault",
+  "description": "Secure, cloud-based medical file management system for hospitals.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
