@@ -32,9 +32,13 @@ import {
 } from './components/patients/PatientActionModals';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { AuthScreen } from './components/auth/AuthScreen';
+import { MobileNav } from './components/layout/MobileNav';
+import { MobileMenu } from './components/layout/MobileMenu';
+import { MobileHeader } from './components/layout/MobileHeader';
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [deptTab, setDeptTab] = useState('Patients');
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
@@ -259,23 +263,58 @@ function AppContent() {
 
   return (
     <div className="flex h-screen bg-navy-950 text-white overflow-hidden">
-      <Sidebar
-        activeTab={activeTab}
-        selectedDept={selectedDept}
-        onTabChange={handleTabChange}
-        onModalOpen={setActiveModal}
-      />
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <Sidebar
+          activeTab={activeTab}
+          selectedDept={selectedDept}
+          onTabChange={handleTabChange}
+          onModalOpen={setActiveModal}
+        />
+      </div>
 
       <main className="flex-1 flex flex-col overflow-hidden">
-        <Header
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
+        {/* Mobile Header */}
+        <MobileHeader
           onNotificationsOpen={() => setIsNotificationsOpen(true)}
-          onEmergencyAccess={() => setActiveModal('emergency-access')}
+          onSearchOpen={() => setSearchQuery('')}
         />
 
-        {renderContent()}
+        {/* Desktop Header */}
+        <div className="hidden lg:block">
+          <Header
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onNotificationsOpen={() => setIsNotificationsOpen(true)}
+            onEmergencyAccess={() => setActiveModal('emergency-access')}
+          />
+        </div>
+
+        <div className="flex-1 overflow-hidden pb-16 lg:pb-0">
+          {renderContent()}
+        </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNav
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        onMenuOpen={() => setIsMobileMenuOpen(true)}
+      />
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <MobileMenu
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+            onModalOpen={(modal) => {
+              setActiveModal(modal);
+              setIsMobileMenuOpen(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <ToastContainer toasts={toasts} onClose={removeToast} />
 

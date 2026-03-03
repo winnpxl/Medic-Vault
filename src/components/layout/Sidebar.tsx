@@ -40,9 +40,11 @@ export function Sidebar({
   return (
     <aside className="w-64 border-r border-white/5 flex flex-col shrink-0">
       <div className="p-6 flex items-center gap-3">
-        <div className="w-10 h-10 bg-orange-primary rounded-lg flex items-center justify-center">
-          <ShieldCheck className="text-white w-6 h-6" />
-        </div>
+        <img 
+          src="/logo.png" 
+          alt="Medic Vault Logo" 
+          className="w-10 h-10 object-contain"
+        />
         <div>
           <h1 className="font-bold text-lg leading-tight">Medic Vault</h1>
           <p className="text-xs text-gray-500">Medical Cloud Services</p>

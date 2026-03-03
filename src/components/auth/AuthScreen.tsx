@@ -82,9 +82,11 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
 
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-orange-primary rounded-xl flex items-center justify-center">
-              <Shield className="w-7 h-7 text-white" />
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Medic Vault Logo" 
+              className="w-12 h-12 object-contain"
+            />
             <h1 className="text-3xl font-bold">Medic Vault</h1>
           </div>
 

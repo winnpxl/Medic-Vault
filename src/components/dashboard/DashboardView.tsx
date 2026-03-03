@@ -55,12 +55,12 @@ export function DashboardView({
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
   return (
-    <div className="flex-1 overflow-y-auto p-8 space-y-8">
+    <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 lg:space-y-8">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Dashboard</h2>
+        <h2 className="text-xl lg:text-2xl font-bold">Dashboard</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
         <StatCard
           title="Recently Accessed Patients"
           value={stats?.recentlyAccessed || 0}
@@ -92,20 +92,20 @@ export function DashboardView({
       </div>
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Patient Access</h3>
-          <div className="flex items-center gap-2">
-            <div className="relative">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <h3 className="text-base lg:text-lg font-semibold">Patient Access</h3>
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0">
+            <div className="relative flex-shrink-0">
               <input
                 type="text"
                 placeholder="Filter patients..."
-                className="bg-navy-900 border border-white/5 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:outline-none"
+                className="bg-navy-900 border border-white/5 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:outline-none w-full lg:w-auto"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
             </div>
-            <div className="relative group">
-              <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
+            <div className="relative group flex-shrink-0">
+              <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
                 <Plus className="w-4 h-4" /> Status
               </button>
               <div className="absolute top-full right-0 mt-2 w-48 bg-navy-900 border border-white/5 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-2">
@@ -126,11 +126,11 @@ export function DashboardView({
                 ))}
               </div>
             </div>
-            <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
+            <button className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
               <Plus className="w-4 h-4" /> Department
             </button>
-            <div className="h-6 w-px bg-white/5 mx-2"></div>
-            <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
+            <div className="hidden lg:block h-6 w-px bg-white/5 mx-2"></div>
+            <button className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
               <LayoutDashboard className="w-4 h-4" /> View
             </button>
           </div>
