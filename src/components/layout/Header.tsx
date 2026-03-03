@@ -5,9 +5,10 @@ interface HeaderProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onNotificationsOpen: () => void;
+  onEmergencyAccess: () => void;
 }
 
-export function Header({ searchQuery, onSearchChange, onNotificationsOpen }: HeaderProps) {
+export function Header({ searchQuery, onSearchChange, onNotificationsOpen, onEmergencyAccess }: HeaderProps) {
   return (
     <header className="h-16 border-b border-white/5 flex items-center justify-between px-8 gap-4 light-mode:border-gray-200 light-mode:bg-white">
       <div className="flex-1 max-w-2xl relative">
@@ -30,7 +31,10 @@ export function Header({ searchQuery, onSearchChange, onNotificationsOpen }: Hea
             4
           </span>
         </button>
-        <button className="bg-orange-primary/10 text-orange-primary border border-orange-primary/20 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-orange-primary/20 transition-colors">
+        <button 
+          onClick={onEmergencyAccess}
+          className="bg-orange-primary/10 text-orange-primary border border-orange-primary/20 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-orange-primary/20 transition-colors"
+        >
           <AlertTriangle className="w-4 h-4" />
           Grant emergency access
         </button>

@@ -10,6 +10,7 @@ import {
   FolderTree,
 } from 'lucide-react';
 import { SIDEBAR_ITEMS } from '../../constants';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -26,6 +27,15 @@ export function Sidebar({
 }: SidebarProps) {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <aside className="w-64 border-r border-white/5 flex flex-col shrink-0">
@@ -146,8 +156,11 @@ export function Sidebar({
             referrerPolicy="no-referrer"
           />
           <div className="flex-1 text-left">
-            <p className="text-sm font-medium">Dr. Daryl Chen</p>
-            <p className="text-xs text-gray-500">dchen@medicover.org</p>
+            <p className="text-sm font-medium">{user?.displayName || 'User'}</p>
+            <p className="text-xs text-gray-500">{user?.email}</p>
+            <p className="text-[10px] text-orange-primary uppercase font-semibold mt-0.5">
+              {user?.role.replace('_', ' ')}
+            </p>
           </div>
           <ChevronDown
             className={`w-4 h-4 text-gray-500 transition-transform ${
@@ -166,7 +179,7 @@ export function Sidebar({
             >
               {[
                 { label: 'Profile settings', icon: UserCircle, action: () => {} },
-                { label: 'Log out', icon: LogOut, danger: true, action: () => {} },
+                { label: 'Log out', icon: LogOut, danger: true, action: handleLogout },
               ].map((item, i) => (
                 <button
                   key={i}

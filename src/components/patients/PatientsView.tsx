@@ -1,4 +1,5 @@
-import { Search, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, UserPlus } from 'lucide-react';
 import { Patient } from '../../types';
 import { PatientTable } from './PatientTable';
 
@@ -27,37 +28,113 @@ export function PatientsView({
   onDeletePatient,
   onOpenModal,
 }: PatientsViewProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [departmentFilter, setDepartmentFilter] = useState<string | null>(null);
+  const itemsPerPage = 15;
+
+  // Apply filters
+  const filteredPatients = patients.filter((p) => {
+    const matchesStatus = statusFilter ? p.status === statusFilter : true;
+    const matchesDept = departmentFilter ? p.department === departmentFilter : true;
+    return matchesStatus && matchesDept;
+  });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedPatients = filteredPatients.slice(startIndex, endIndex);
+
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
+  };
+
   return (
     <div className="flex-1 overflow-y-auto p-8 space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Patients Registry</h2>
-        <div className="flex items-center gap-3">
+        <button 
+          className="btn-primary flex items-center gap-2"
+          onClick={() => onShowToast('info', 'Add New Patient feature coming soon')}
+        >
+          <UserPlus className="w-4 h-4" /> Add New Patient
+        </button>
+      </div>
+
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
               type="text"
-              placeholder="Search all patients..."
-              className="bg-navy-900 border border-white/5 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-orange-primary w-64"
+              placeholder="Filter patients..."
+              className="bg-navy-900 border border-white/5 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:outline-none"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
-          <button className="btn-secondary">
-            <Filter className="w-4 h-4" /> Filter
-          </button>
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
+              <Plus className="w-4 h-4" /> Status
+            </button>
+            <div className="absolute top-full left-0 mt-2 w-48 bg-navy-900 border border-white/5 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-2">
+              {['Discharged', 'ICU', 'Admitted', 'Outpatient'].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => {
+                    setStatusFilter(statusFilter === status ? null : status);
+                    setCurrentPage(1);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                    statusFilter === status
+                      ? 'bg-orange-primary/10 text-orange-primary'
+                      : 'hover:bg-white/5'
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="relative group">
+            <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
+              <Plus className="w-4 h-4" /> Department
+            </button>
+            <div className="absolute top-full left-0 mt-2 w-48 bg-navy-900 border border-white/5 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-2">
+              {['Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'Emergency'].map((dept) => (
+                <button
+                  key={dept}
+                  onClick={() => {
+                    setDepartmentFilter(departmentFilter === dept ? null : dept);
+                    setCurrentPage(1);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                    departmentFilter === dept
+                      ? 'bg-orange-primary/10 text-orange-primary'
+                      : 'hover:bg-white/5'
+                  }`}
+                >
+                  {dept}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
 
-      <PatientTable
-        patients={patients}
-        totalPatients={totalPatients}
-        onPatientSelect={onPatientSelect}
-        onShowToast={onShowToast}
-        onUpdatePatient={onUpdatePatient}
-        onArchivePatient={onArchivePatient}
-        onDeletePatient={onDeletePatient}
-        onOpenModal={onOpenModal}
-      />
+        <PatientTable
+          patients={paginatedPatients}
+          totalPatients={filteredPatients.length}
+          onPatientSelect={onPatientSelect}
+          onShowToast={onShowToast}
+          onUpdatePatient={onUpdatePatient}
+          onArchivePatient={onArchivePatient}
+          onDeletePatient={onDeletePatient}
+          onOpenModal={onOpenModal}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+        />
+      </section>
     </div>
   );
 }

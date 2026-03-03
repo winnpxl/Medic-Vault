@@ -23,9 +23,18 @@ import { CreateDepartmentModalContent } from './components/modals/CreateDepartme
 import { CreatePublicFolderModal } from './components/modals/CreatePublicFolderModal';
 import { NotificationPanel } from './components/modals/NotificationPanel';
 import { NotificationSettingsModalContent } from './components/modals/NotificationSettingsModal';
-import { EditPatientModal, CheckStatusModal, ArchivePatientModal, DeletePatientModal } from './components/patients/PatientActionModals';
+import { GrantEmergencyAccessModal } from './components/modals/GrantEmergencyAccessModal';
+import {
+  EditPatientModal,
+  CheckStatusModal,
+  ArchivePatientModal,
+  DeletePatientModal,
+} from './components/patients/PatientActionModals';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthScreen } from './components/auth/AuthScreen';
 
-export default function App() {
+function AppContent() {
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [deptTab, setDeptTab] = useState('Patients');
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
@@ -42,9 +51,23 @@ export default function App() {
   const [modalPatient, setModalPatient] = useState<Patient | null>(null);
 
   useEffect(() => {
-    fetchPatients().then(setPatients);
-    fetchStats().then(setStats);
-  }, []);
+    if (user) {
+      // Only fetch mock data for super_admin
+      if (user.role === 'super_admin') {
+        fetchPatients().then(setPatients);
+        fetchStats().then(setStats);
+      } else {
+        // New users start with empty data
+        setPatients([]);
+        setStats({
+          recentlyAccessed: 0,
+          pendingReviews: 0,
+          externalShares: 0,
+          accessAlerts: 0,
+        });
+      }
+    }
+  }, [user]);
 
   const showToast = (type: 'success' | 'error' | 'info', message: string) => {
     const id = Date.now().toString();
@@ -219,6 +242,21 @@ export default function App() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-navy-950 text-white items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 border-4 border-orange-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthScreen />;
+  }
+
   return (
     <div className="flex h-screen bg-navy-950 text-white overflow-hidden">
       <Sidebar
@@ -233,6 +271,7 @@ export default function App() {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           onNotificationsOpen={() => setIsNotificationsOpen(true)}
+          onEmergencyAccess={() => setActiveModal('emergency-access')}
         />
 
         {renderContent()}
@@ -315,7 +354,26 @@ export default function App() {
             />
           </CenterModal>
         )}
+        {activeModal === 'emergency-access' && (
+          <CenterModal title="Grant Emergency Access" onClose={() => setActiveModal(null)}>
+            <GrantEmergencyAccessModal
+              onClose={() => setActiveModal(null)}
+              onGrant={(data) => {
+                showToast('success', `Emergency access granted to ${data.recipient} for ${data.duration} hour(s)`);
+                setActiveModal(null);
+              }}
+            />
+          </CenterModal>
+        )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }

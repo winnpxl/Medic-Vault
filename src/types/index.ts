@@ -46,3 +46,23 @@ export interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
 }
+
+export type UserRole = 'super_admin' | 'admin' | 'doctor' | 'nurse' | 'staff';
+
+export interface User {
+  uid: string;
+  email: string;
+  displayName: string;
+  role: UserRole;
+  createdAt: string;
+  lastLogin: string;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName: string, role: UserRole) => Promise<void>;
+  signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+}

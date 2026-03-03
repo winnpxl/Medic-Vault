@@ -1,0 +1,452 @@
+# Authentication Flow Diagram
+
+## Visual Flow
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     User Opens App                          │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│              AuthProvider Initializes                       │
+│         (Checks Firebase Auth State)                        │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+              ┌──────┴──────┐
+              │             │
+              ▼             ▼
+    ┌─────────────┐   ┌─────────────┐
+    │   Loading   │   │ Authenticated│
+    │   Spinner   │   │    User?     │
+    └─────────────┘   └──────┬───────┘
+                             │
+                    ┌────────┴────────┐
+                    │                 │
+                    ▼                 ▼
+            ┌──────────────┐   ┌──────────────┐
+            │     NO       │   │     YES      │
+            │ (Not Logged) │   │  (Logged In) │
+            └──────┬───────┘   └──────┬───────┘
+                   │                  │
+                   ▼                  ▼
+        ┌──────────────────┐   ┌──────────────────┐
+        │  AuthScreen      │   │  Load User Data  │
+        │  (Login/Register)│   │  from Firestore  │
+        └──────┬───────────┘   └──────┬───────────┘
+               │                       │
+               │                       ▼
+               │              ┌────────┴────────┐
+               │              │                 │
+               │              ▼                 ▼
+               │      ┌──────────────┐   ┌──────────────┐
+               │      │ super_admin? │   │ Other Role?  │
+               │      └──────┬───────┘   └──────┬───────┘
+               │             │                  │
+               │             ▼                  ▼
+               │      ┌──────────────┐   ┌──────────────┐
+               │      │ Load Mock    │   │ Empty        │
+               │      │ Patient Data │   │ Dashboard    │
+               │      └──────┬───────┘   └──────┬───────┘
+               │             │                  │
+               │             └────────┬─────────┘
+               │                      │
+               │                      ▼
+               │              ┌──────────────────┐
+               │              │  Show Dashboard  │
+               │              │  with Sidebar    │
+               │              └──────────────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │  User Chooses:       │
+    │  1. Login            │
+    │  2. Register         │
+    │  3. Forgot Password  │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │  Firebase Auth       │
+    │  Processes Request   │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │  Success?            │
+    └──────┬───────────────┘
+           │
+    ┌──────┴──────┐
+    │             │
+    ▼             ▼
+┌────────┐   ┌────────┐
+│  YES   │   │   NO   │
+└───┬────┘   └───┬────┘
+    │            │
+    │            ▼
+    │     ┌──────────────┐
+    │     │ Show Error   │
+    │     │ Message      │
+    │     └──────────────┘
+    │
+    ▼
+┌──────────────────────┐
+│  Create/Update User  │
+│  in Firestore        │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│  Redirect to         │
+│  Dashboard           │
+└──────────────────────┘
+```
+
+## Registration Flow
+
+```
+User Clicks "Register Now"
+         │
+         ▼
+┌─────────────────────┐
+│  Fill Registration  │
+│  Form:              │
+│  - Full Name        │
+│  - Email            │
+│  - Password         │
+│  - Role Selection   │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Submit Form        │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Firebase Creates   │
+│  Auth Account       │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Create User Doc    │
+│  in Firestore:      │
+│  {                  │
+│    uid: "xxx",      │
+│    email: "...",    │
+│    displayName: "", │
+│    role: "staff",   │
+│    createdAt: "",   │
+│    lastLogin: ""    │
+│  }                  │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Auto Login         │
+│  User                │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Show Dashboard     │
+│  (Empty for new     │
+│   users)            │
+└─────────────────────┘
+```
+
+## Login Flow
+
+```
+User Enters Credentials
+         │
+         ▼
+┌─────────────────────┐
+│  Email & Password   │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Firebase           │
+│  Authenticates      │
+└─────────┬───────────┘
+          │
+    ┌─────┴─────┐
+    │           │
+    ▼           ▼
+┌────────┐  ┌────────┐
+│Success │  │ Failed │
+└───┬────┘  └───┬────┘
+    │           │
+    │           ▼
+    │      ┌──────────┐
+    │      │Show Error│
+    │      └──────────┘
+    │
+    ▼
+┌─────────────────────┐
+│  Fetch User Data    │
+│  from Firestore     │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Update Last Login  │
+│  Timestamp          │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Load Dashboard     │
+│  Based on Role      │
+└─────────────────────┘
+```
+
+## Password Reset Flow
+
+```
+User Clicks "Forgot Password"
+         │
+         ▼
+┌─────────────────────┐
+│  Enter Email        │
+│  Address            │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Click "Send Reset  │
+│  Link"              │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Firebase Sends     │
+│  Reset Email        │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  User Receives      │
+│  Email              │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Click Link in      │
+│  Email              │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Firebase Hosted    │
+│  Reset Page         │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Enter New          │
+│  Password           │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Password Updated   │
+│  in Firebase        │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Return to Login    │
+│  Screen             │
+└─────────────────────┘
+```
+
+## Logout Flow
+
+```
+User Clicks "Log out" in Sidebar
+         │
+         ▼
+┌─────────────────────┐
+│  Call signOut()     │
+│  from AuthContext   │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Firebase Clears    │
+│  Auth Session       │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  AuthContext Sets   │
+│  user = null        │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  App Detects No     │
+│  User               │
+└─────────┬───────────┘
+          │
+          ▼
+┌─────────────────────┐
+│  Redirect to        │
+│  AuthScreen         │
+└─────────────────────┘
+```
+
+## Role-Based Data Loading
+
+```
+User Authenticated
+         │
+         ▼
+┌─────────────────────┐
+│  Check user.role    │
+└─────────┬───────────┘
+          │
+    ┌─────┴─────────────────────┐
+    │                           │
+    ▼                           ▼
+┌──────────────┐        ┌──────────────┐
+│ super_admin? │        │ Other Role?  │
+└──────┬───────┘        └──────┬───────┘
+       │                       │
+       ▼                       ▼
+┌──────────────┐        ┌──────────────┐
+│ Load Mock    │        │ Initialize   │
+│ Data:        │        │ Empty:       │
+│              │        │              │
+│ - 120        │        │ - patients:  │
+│   patients   │        │   []         │
+│ - Stats      │        │ - stats: {   │
+│ - Depts      │        │   all: 0     │
+│              │        │   }          │
+└──────┬───────┘        └──────┬───────┘
+       │                       │
+       └───────────┬───────────┘
+                   │
+                   ▼
+           ┌──────────────┐
+           │ Render       │
+           │ Dashboard    │
+           └──────────────┘
+```
+
+## Component Hierarchy
+
+```
+App (with AuthProvider)
+ │
+ ├─ AuthContext.Provider
+ │   │
+ │   └─ AppContent
+ │       │
+ │       ├─ Loading State (if loading)
+ │       │
+ │       ├─ AuthScreen (if !user)
+ │       │   ├─ Login Form
+ │       │   ├─ Register Form
+ │       │   └─ Forgot Password
+ │       │
+ │       └─ Main App (if user)
+ │           ├─ Sidebar
+ │           │   ├─ User Profile
+ │           │   └─ Logout Button
+ │           │
+ │           ├─ Header
+ │           │
+ │           └─ Content
+ │               ├─ Dashboard
+ │               ├─ Patients
+ │               ├─ Departments
+ │               └─ Folders
+```
+
+## State Management
+
+```
+AuthContext State:
+┌─────────────────────────────┐
+│ user: User | null           │
+│ loading: boolean            │
+│ signIn: (email, pwd) => {}  │
+│ signUp: (...) => {}         │
+│ signOut: () => {}           │
+│ resetPassword: (email) => {}│
+└─────────────────────────────┘
+         │
+         ▼
+    Used by:
+    - App.tsx (check auth)
+    - AuthScreen (login/register)
+    - Sidebar (user info, logout)
+```
+
+## Firebase Collections
+
+```
+Firestore Database:
+├─ users/
+│  ├─ {userId}/
+│  │  ├─ uid: string
+│  │  ├─ email: string
+│  │  ├─ displayName: string
+│  │  ├─ role: UserRole
+│  │  ├─ createdAt: timestamp
+│  │  └─ lastLogin: timestamp
+│  │
+├─ patients/ (future)
+│  └─ {patientId}/
+│     ├─ name: string
+│     ├─ age: number
+│     ├─ createdBy: userId
+│     └─ ...
+│
+└─ departments/ (future)
+   └─ {deptId}/
+      └─ ...
+```
+
+## Security Rules Flow
+
+```
+User Makes Request
+         │
+         ▼
+┌─────────────────────┐
+│  Firestore Checks   │
+│  Security Rules     │
+└─────────┬───────────┘
+          │
+    ┌─────┴─────┐
+    │           │
+    ▼           ▼
+┌────────┐  ┌────────┐
+│Allowed │  │Denied  │
+└───┬────┘  └───┬────┘
+    │           │
+    ▼           ▼
+┌────────┐  ┌────────┐
+│Execute │  │Return  │
+│Request │  │Error   │
+└────────┘  └────────┘
+```
+
+## Summary
+
+This authentication system provides:
+- ✅ Secure user registration and login
+- ✅ Role-based access control
+- ✅ Data separation (mock vs real)
+- ✅ Session persistence
+- ✅ Password reset functionality
+- ✅ User profile management
+- ✅ Secure logout
+
+All flows are handled by Firebase Authentication and Firestore, ensuring security and scalability.
