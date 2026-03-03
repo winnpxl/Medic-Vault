@@ -90,12 +90,8 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
 
           <div className="space-y-4 max-w-md">
             <p className="text-lg text-gray-300">
-              Medic Vault is your complete people platform designed to simplify HR and enhance
+              Medic Vault is your complete people platform designed to simplify medical files storage and enhance
               productivity.
-            </p>
-            <p className="text-gray-400">
-              It supports growing teams from onboarding to payroll. With Medic Vault, you can lead
-              more efficiently.
             </p>
           </div>
         </div>
@@ -173,7 +169,24 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
           )}
 
           {/* Form */}
+
           <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && !showForgotPassword && (
+              <div className="space-y-1.5">
+                <label className="text-sm text-gray-400">Title</label>
+                <select
+                  className="input-field"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value as UserRole)}
+                >
+                  <option value="<Mister>">Mr.</option>
+                  <option value="Missus">Mrs.</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="admin">Dr. Mrs</option>
+                </select>
+              </div>
+            )}
+
             {!isLogin && !showForgotPassword && (
               <div className="space-y-1.5">
                 <label className="text-sm text-gray-400">Full Name</label>
@@ -182,7 +195,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
                   <input
                     type="text"
                     className="input-field pl-11"
-                    placeholder="John Doe"
+                    placeholder="Seearr Pseveun"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     required={!isLogin}
@@ -315,7 +328,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
           </div>
 
           <p className="text-center text-xs text-gray-600">
-            Medic Vault - Designed by Oluwaseyi Akin-Soyinu - All rights reserved.
+            Medic Vault - Designed and Vibed by Samuel - All rights reserved ~kinda~.
           </p>
         </motion.div>
       </div>
