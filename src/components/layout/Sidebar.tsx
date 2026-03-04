@@ -38,7 +38,7 @@ export function Sidebar({
   };
 
   return (
-    <aside className="w-64 border-r border-white/5 flex flex-col shrink-0">
+    <aside className="w-64 h-screen border-r border-white/5 flex flex-col shrink-0">
       <div className="p-6 flex items-center gap-3">
         <img 
           src="/logo.png" 

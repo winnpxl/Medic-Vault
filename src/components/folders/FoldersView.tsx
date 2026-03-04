@@ -13,7 +13,7 @@ export function FoldersView({ onFolderSelect, onShowToast }: FoldersViewProps) {
     { name: 'Pediatrics - General Public', files: 24, expiry: '14 days left', views: 8 },
   ]);
   return (
-    <div className="flex-1 overflow-y-auto p-8 space-y-8">
+    <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 lg:space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Public Medical Folders</h2>
         <button

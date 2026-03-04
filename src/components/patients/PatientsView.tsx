@@ -63,17 +63,18 @@ export function PatientsView({
       </div>
 
       <section className="space-y-4">
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2">
-          <div className="relative flex-1">
+        <div className="flex flex-row lg:flex-row items-stretch lg:items-center gap-2">
+          <div className="relative flex-1"> 
             <input
               type="text"
               placeholder="Filter patients..."
               className="bg-navy-900 border border-white/5 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:outline-none w-full"
+              style={{ paddingRight: '24px', paddingBottom: '11px', paddingTop: '11px' }}
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0" style={{overflow: 'hidden'}}>
             <div className="relative group flex-shrink-0">
               <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
                 <Plus className="w-4 h-4" /> Status
@@ -93,29 +94,6 @@ export function PatientsView({
                     }`}
                   >
                     {status}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="relative group flex-shrink-0">
-              <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
-                <Plus className="w-4 h-4" /> Department
-              </button>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-navy-900 border border-white/5 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-2">
-                {['Cardiology', 'Neurology', 'Pediatrics', 'Orthopedics', 'Emergency'].map((dept) => (
-                  <button
-                    key={dept}
-                    onClick={() => {
-                      setDepartmentFilter(departmentFilter === dept ? null : dept);
-                      setCurrentPage(1);
-                    }}
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                      departmentFilter === dept
-                        ? 'bg-orange-primary/10 text-orange-primary'
-                        : 'hover:bg-white/5'
-                    }`}
-                  >
-                    {dept}
                   </button>
                 ))}
               </div>

@@ -290,7 +290,7 @@ function AppContent() {
           />
         </div>
 
-        <div className="flex-1 overflow-hidden pb-16 lg:pb-0">
+        <div className="flex-1 overflow-y-auto pb-16 lg:pb-0 overscroll-contain">
           {renderContent()}
         </div>
       </main>

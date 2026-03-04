@@ -9,7 +9,7 @@ interface DepartmentsViewProps {
 
 export function DepartmentsView({ onDepartmentSelect, onModalOpen }: DepartmentsViewProps) {
   return (
-    <div className="flex-1 overflow-y-auto p-8 space-y-8">
+    <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 lg:space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Departments</h2>
         <button

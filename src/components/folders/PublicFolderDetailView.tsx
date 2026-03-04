@@ -89,7 +89,7 @@ export function PublicFolderDetailView({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-8 space-y-8">
+    <div className="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 lg:space-y-8">
       <div className="space-y-2">
         <button
           onClick={onBack}

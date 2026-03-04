@@ -5,6 +5,8 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  signInWithPopup,
+  GoogleAuthProvider,
   User as FirebaseUser,
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
@@ -88,6 +90,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await sendPasswordResetEmail(auth, email);
   };
 
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const firebaseUser = result.user;
+
+    // Check if user exists in Firestore
+    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    
+    if (!userDoc.exists()) {
+      // Create new user document for first-time Google sign-in
+      const newUser: User = {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        displayName: firebaseUser.displayName || '',
+        role: 'staff', // Default role for Google sign-in users
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+      };
+      await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
+      setUser(newUser);
+    }
+  };
+
   const value: AuthContextType = {
     user,
     loading,
@@ -95,6 +120,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signUp,
     signOut,
     resetPassword,
+    signInWithGoogle,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

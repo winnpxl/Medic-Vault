@@ -24,13 +24,13 @@ export function MobileHeader({ onNotificationsOpen, onSearchOpen }: MobileHeader
         <div className="flex items-center gap-2">
           <button
             onClick={onSearchOpen}
-            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/5 rounded-lg transition-colors flex items-center justify-center"
           >
             <Search className="w-5 h-5 text-gray-400" />
           </button>
           <button
             onClick={onNotificationsOpen}
-            className="p-2 hover:bg-white/5 rounded-lg transition-colors relative"
+            className="p-2 hover:bg-white/5 rounded-lg transition-colors relative flex items-center justify-center"
           >
             <Bell className="w-5 h-5 text-gray-400" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange-primary rounded-full"></span>
