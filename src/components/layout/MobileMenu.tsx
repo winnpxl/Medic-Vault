@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { X, LogOut, UserCircle, ShieldCheck, Plus, File, FolderTree } from 'lucide-react';
+import { X, LogOut, UserCircle, ShieldCheck, Plus, File, FolderTree, Activity, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface MobileMenuProps {
@@ -111,6 +111,38 @@ export function MobileMenu({ isOpen, onClose, onModalOpen }: MobileMenuProps) {
             >
               <Plus className="w-5 h-5 text-gray-400" />
               <span className="text-sm">Add User</span>
+            </button>
+          </div>
+
+          {/* Management Section */}
+          <div className="p-4 space-y-2 border-t border-white/10">
+            <p className="text-xs text-gray-500 uppercase font-semibold mb-3">Management</p>
+            <button
+              onClick={() => {
+                onClose();
+              }}
+              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left"
+            >
+              <Activity className="w-5 h-5 text-gray-400" />
+              <span className="text-sm">Activity & Audit</span>
+            </button>
+            <button
+              onClick={() => {
+                onClose();
+              }}
+              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left"
+            >
+              <ShieldCheck className="w-5 h-5 text-gray-400" />
+              <span className="text-sm">Roles & Permissions</span>
+            </button>
+            <button
+              onClick={() => {
+                onClose();
+              }}
+              className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left"
+            >
+              <Settings className="w-5 h-5 text-gray-400" />
+              <span className="text-sm">Administration</span>
             </button>
           </div>
 

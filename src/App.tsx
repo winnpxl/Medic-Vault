@@ -327,7 +327,12 @@ function AppContent() {
         )}
         {activeModal === 'file' && (
           <CenterModal title="Upload New Medical File" onClose={() => setActiveModal(null)}>
-            <FileUploadModalContent />
+            <FileUploadModalContent
+              onClose={() => setActiveModal(null)}
+              onUpload={(fileData) => {
+                showToast('success', `File "${fileData.title || fileData.file.name}" uploaded successfully`);
+              }}
+            />
           </CenterModal>
         )}
         {activeModal === 'folder' && (

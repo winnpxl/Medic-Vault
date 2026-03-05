@@ -43,6 +43,7 @@ export function DashboardView({
   onOpenModal,
 }: DashboardViewProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
   const itemsPerPage = 10;
   
   // Calculate pagination
@@ -94,43 +95,55 @@ export function DashboardView({
       <section className="space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <h3 className="text-base lg:text-lg font-semibold">Patient Access</h3>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0">
+          <div className="flex items-center gap-2">
             <div className="relative flex-shrink-0">
               <input
                 type="text"
                 placeholder="Filter patients..."
-                className="bg-navy-900 border border-white/5 rounded-lg py-1.5 pl-3 pr-8 text-sm focus:outline-none w-full lg:w-auto"
+                className="bg-navy-900 border border-white/5 rounded-lg px-3 text-sm focus:outline-none w-full lg:w-auto h-[38px]"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
             </div>
-            <div className="relative group flex-shrink-0">
-              <button className="flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
+            <div className="relative flex-shrink-0">
+              <button
+                onClick={() => setIsStatusOpen(!isStatusOpen)}
+                className="flex items-center gap-2 px-3 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap h-[38px]"
+              >
                 <Plus className="w-4 h-4" /> Status
               </button>
-              <div className="absolute top-full right-0 mt-2 w-48 bg-navy-900 border border-white/5 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-2">
-                {['Discharged', 'ICU', 'Admitted', 'Outpatient'].map((status) => (
-                  <button
-                    key={status}
-                    onClick={() =>
-                      onStatusFilterChange(statusFilter === status ? null : status)
-                    }
-                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                      statusFilter === status
-                        ? 'bg-orange-primary/10 text-orange-primary'
-                        : 'hover:bg-white/5'
-                    }`}
-                  >
-                    {status}
-                  </button>
-                ))}
-              </div>
+              {isStatusOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsStatusOpen(false)}
+                  />
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-navy-900 border border-white/5 rounded-lg shadow-xl z-50 p-2">
+                    {['Discharged', 'ICU', 'Admitted', 'Outpatient'].map((status) => (
+                      <button
+                        key={status}
+                        onClick={() => {
+                          onStatusFilterChange(statusFilter === status ? null : status);
+                          setIsStatusOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                          statusFilter === status
+                            ? 'bg-orange-primary/10 text-orange-primary'
+                            : 'hover:bg-white/5'
+                        }`}
+                      >
+                        {status}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
-            <button className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
+            <button className="hidden lg:flex items-center gap-2 px-3 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap h-[38px]">
               <Plus className="w-4 h-4" /> Department
             </button>
             <div className="hidden lg:block h-6 w-px bg-white/5 mx-2"></div>
-            <button className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap">
+            <button className="hidden lg:flex items-center gap-2 px-3 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap h-[38px]">
               <LayoutDashboard className="w-4 h-4" /> View
             </button>
           </div>

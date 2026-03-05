@@ -18,7 +18,7 @@ export function FoldersView({ onFolderSelect, onShowToast }: FoldersViewProps) {
         <h2 className="text-2xl font-bold">Public Medical Folders</h2>
         <button
           onClick={() => onShowToast('info', 'Create folder modal will open')}
-          className="bg-orange-primary text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-orange-primary/90 transition-colors"
+          className="hidden md:flex bg-orange-primary text-white px-4 py-2 rounded-lg text-sm font-medium items-center gap-2 hover:bg-orange-primary/90 transition-colors"
         >
           <Plus className="w-4 h-4" /> Create shareable folder
         </button>
@@ -70,6 +70,14 @@ export function FoldersView({ onFolderSelect, onShowToast }: FoldersViewProps) {
           </div>
         ))}
       </div>
+
+      {/* FAB for mobile only */}
+      <button
+        onClick={() => onShowToast('info', 'Create folder modal will open')}
+        className="md:hidden fixed bottom-20 right-6 w-14 h-14 bg-orange-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-orange-primary/90 transition-colors z-[60]"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
     </div>
   );
 }

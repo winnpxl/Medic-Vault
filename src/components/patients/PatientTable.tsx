@@ -8,6 +8,7 @@ import {
   ChevronRight,
   ArrowUp,
   ArrowDown,
+  Users,
 } from 'lucide-react';
 import { Patient } from '../../types';
 import { STATUS_COLORS } from '../../constants';
@@ -90,8 +91,24 @@ export function PatientTable({
         ))}
         
         {sortedPatients.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            <p>No patients found</p>
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center max-w-md">
+              <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Users className="w-10 h-10 text-gray-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Oops! There's nothing here...</h3>
+              <p className="text-gray-500 text-sm mb-6">
+                There is nothing here to view right now, please add new patient data to get started.
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <button className="px-4 py-2 bg-navy-900 border border-white/10 rounded-lg text-sm hover:bg-white/5 transition-colors">
+                  Upload CSV
+                </button>
+                <button className="px-4 py-2 bg-orange-primary rounded-lg text-sm font-medium hover:bg-orange-600 transition-colors">
+                  New Patient
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

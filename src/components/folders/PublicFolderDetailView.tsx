@@ -117,7 +117,7 @@ export function PublicFolderDetailView({
           </div>
           <button
             onClick={onUploadFile}
-            className="bg-orange-primary text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-orange-primary/90 transition-colors"
+            className="hidden md:flex bg-orange-primary text-white px-4 py-2 rounded-lg text-sm font-medium items-center gap-2 hover:bg-orange-primary/90 transition-colors"
           >
             <Upload className="w-4 h-4" /> Upload File
           </button>
@@ -222,6 +222,14 @@ export function PublicFolderDetailView({
           {folder.expiry.toLowerCase()}.
         </p>
       </div>
+
+      {/* FAB for mobile only */}
+      <button
+        onClick={onUploadFile}
+        className="md:hidden fixed bottom-20 right-6 w-14 h-14 bg-orange-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-orange-primary/90 transition-colors z-[60]"
+      >
+        <Upload className="w-5 h-5" />
+      </button>
     </div>
   );
 }

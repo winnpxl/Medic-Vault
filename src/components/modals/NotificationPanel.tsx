@@ -70,12 +70,12 @@ export function NotificationPanel({ onClose, onOpenSettings }: NotificationPanel
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="relative w-full max-w-md h-full bg-navy-950 border-l border-white/10 flex flex-col shadow-2xl light-mode:bg-white light-mode:border-gray-200"
+        className="relative w-full max-w-md md:max-w-md h-full bg-navy-950 border-l border-white/10 flex flex-col shadow-2xl light-mode:bg-white light-mode:border-gray-200"
       >
         <div className="p-6 border-b border-white/5 flex items-center justify-between light-mode:border-gray-100">
           <h3 className="text-xl font-bold">Notifications</h3>
           <div className="flex items-center gap-2">
-            <button className="text-xs text-orange-primary font-medium hover:underline">
+            <button className="hidden md:block text-xs text-orange-primary font-medium hover:underline">
               Mark All as Read
             </button>
             <button
@@ -93,22 +93,24 @@ export function NotificationPanel({ onClose, onOpenSettings }: NotificationPanel
           </div>
         </div>
 
-        <div className="px-6 py-4 border-b border-white/5 flex gap-2 overflow-x-auto light-mode:border-gray-100">
-          {['All', 'Patient Updates', 'Access & Permissions', 'External Shares', 'System Alerts'].map(
-            (filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  activeFilter === filter
-                    ? 'bg-orange-primary text-white'
-                    : 'bg-white/5 text-gray-400 hover:text-white light-mode:bg-gray-100 light-mode:text-gray-600'
-                }`}
-              >
-                {filter}
-              </button>
-            )
-          )}
+        <div className="px-4 md:px-6 py-4 border-b border-white/5 light-mode:border-gray-100">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+            {['All', 'Patient Updates', 'Access & Permissions', 'External Shares', 'System Alerts'].map(
+              (filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex-shrink-0 ${
+                    activeFilter === filter
+                      ? 'bg-orange-primary text-white'
+                      : 'bg-white/5 text-gray-400 hover:text-white light-mode:bg-gray-100 light-mode:text-gray-600'
+                  }`}
+                >
+                  {filter}
+                </button>
+              )
+            )}
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">

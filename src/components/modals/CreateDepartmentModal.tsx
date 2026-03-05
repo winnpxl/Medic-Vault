@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export function CreateDepartmentModalContent() {
+  const [allowCrossDepartment, setAllowCrossDepartment] = useState(false);
+  const [allowExternalSharing, setAllowExternalSharing] = useState(false);
+  const [enableEmergencyOverride, setEnableEmergencyOverride] = useState(true);
+  const [requireFileMetadata, setRequireFileMetadata] = useState(true);
+
   return (
     <div className="space-y-8">
       <section className="space-y-4">
@@ -44,15 +49,33 @@ export function CreateDepartmentModalContent() {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Allow Cross-Department Access</span>
-            <div className="w-10 h-5 rounded-full bg-white/10 relative cursor-pointer">
-              <div className="absolute top-1 left-1 w-3 h-3 rounded-full bg-white" />
-            </div>
+            <button
+              onClick={() => setAllowCrossDepartment(!allowCrossDepartment)}
+              className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+                allowCrossDepartment ? 'bg-orange-primary' : 'bg-white/10'
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-transform ${
+                  allowCrossDepartment ? 'left-6' : 'left-1'
+                }`}
+              />
+            </button>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Allow External Sharing by Default</span>
-            <div className="w-10 h-5 rounded-full bg-white/10 relative cursor-pointer">
-              <div className="absolute top-1 left-1 w-3 h-3 rounded-full bg-white" />
-            </div>
+            <button
+              onClick={() => setAllowExternalSharing(!allowExternalSharing)}
+              className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+                allowExternalSharing ? 'bg-orange-primary' : 'bg-white/10'
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-transform ${
+                  allowExternalSharing ? 'left-6' : 'left-1'
+                }`}
+              />
+            </button>
           </div>
         </div>
       </section>
@@ -64,15 +87,33 @@ export function CreateDepartmentModalContent() {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Enable Emergency Override</span>
-            <div className="w-10 h-5 rounded-full bg-orange-primary relative cursor-pointer">
-              <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-white" />
-            </div>
+            <button
+              onClick={() => setEnableEmergencyOverride(!enableEmergencyOverride)}
+              className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+                enableEmergencyOverride ? 'bg-orange-primary' : 'bg-white/10'
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-transform ${
+                  enableEmergencyOverride ? 'left-6' : 'left-1'
+                }`}
+              />
+            </button>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Require File Metadata Before Upload</span>
-            <div className="w-10 h-5 rounded-full bg-orange-primary relative cursor-pointer">
-              <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-white" />
-            </div>
+            <button
+              onClick={() => setRequireFileMetadata(!requireFileMetadata)}
+              className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${
+                requireFileMetadata ? 'bg-orange-primary' : 'bg-white/10'
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-transform ${
+                  requireFileMetadata ? 'left-6' : 'left-1'
+                }`}
+              />
+            </button>
           </div>
         </div>
       </section>
@@ -90,7 +131,10 @@ export function CreateDepartmentModalContent() {
 
       <div className="pt-6 flex gap-3">
         <button className="btn-secondary flex-1 justify-center">Cancel</button>
-        <button className="btn-primary flex-1 justify-center">Create Department</button>
+        <button className="btn-primary flex-1 justify-center">
+          <span className="hidden md:inline">Create Department</span>
+          <span className="md:hidden">Create</span>
+        </button>
       </div>
     </div>
   );
