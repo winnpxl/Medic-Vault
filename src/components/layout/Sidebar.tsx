@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ShieldCheck,
@@ -27,7 +27,24 @@ export function Sidebar({
 }: SidebarProps) {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(
+    localStorage.getItem('profilePicture')
+  );
   const { user, signOut } = useAuth();
+
+  // Listen for profile picture changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setProfilePicture(localStorage.getItem('profilePicture'));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    // Also listen for custom event for same-tab updates
+    window.addEventListener('profilePictureChanged', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('profilePictureChanged', handleStorageChange);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -152,7 +169,7 @@ export function Sidebar({
           className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors"
         >
           <img
-            src="https://picsum.photos/seed/doc/100/100"
+            src={profilePicture || 'https://picsum.photos/seed/doc/100/100'}
             className="w-10 h-10 rounded-full object-cover border border-white/10"
             alt="User"
             referrerPolicy="no-referrer"

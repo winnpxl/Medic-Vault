@@ -18,6 +18,7 @@ import { ToastContainer, ToastProps } from './components/common/Toast';
 import { CenterModal } from './components/modals/CenterModal';
 import { RightModal } from './components/modals/RightModal';
 import { FileUploadModalContent } from './components/modals/FileUploadModal';
+import { PublicFileUploadModal } from './components/modals/PublicFileUploadModal';
 import { CreateFolderModalContent } from './components/modals/CreateFolderModal';
 import { AddUserModalContent } from './components/modals/AddUserModal';
 import { CreateDepartmentModalContent } from './components/modals/CreateDepartmentModal';
@@ -161,7 +162,7 @@ function AppContent() {
         <PublicFolderDetailView
           folder={selectedPublicFolder}
           onBack={() => setSelectedPublicFolder(null)}
-          onUploadFile={() => setActiveModal('file')}
+          onUploadFile={() => setActiveModal('public-file')}
           onShowToast={showToast}
         />
       );
@@ -190,6 +191,11 @@ function AppContent() {
           onSearchChange={setSearchQuery}
           onPatientSelect={setSelectedPatient}
           onFolderSelect={setSelectedFolder}
+          onShowToast={showToast}
+          onUpdatePatient={handleUpdatePatient}
+          onArchivePatient={handleArchivePatient}
+          onDeletePatient={handleDeletePatient}
+          onOpenModal={openPatientModal}
         />
       );
     }
@@ -240,6 +246,7 @@ function AppContent() {
           <FoldersView
             onFolderSelect={setSelectedPublicFolder}
             onShowToast={showToast}
+            onCreateFolder={() => setActiveModal('public-folder')}
           />
         );
       case 'settings':
@@ -332,6 +339,16 @@ function AppContent() {
             onOpenSettings={() => setActiveModal('notification-settings')}
           />
         )}
+        {activeModal === 'public-file' && (
+          <CenterModal title="Upload File to Public Folder" onClose={() => setActiveModal(null)}>
+            <PublicFileUploadModal
+              onClose={() => setActiveModal(null)}
+              onUpload={(fileData) => {
+                showToast('success', `File "${fileData.title || fileData.file.name}" uploaded successfully`);
+              }}
+            />
+          </CenterModal>
+        )}
         {activeModal === 'file' && (
           <CenterModal title="Upload New Medical File" onClose={() => setActiveModal(null)}>
             <FileUploadModalContent
@@ -344,7 +361,13 @@ function AppContent() {
         )}
         {activeModal === 'folder' && (
           <CenterModal title="Create New Folder" onClose={() => setActiveModal(null)}>
-            <CreateFolderModalContent />
+            <CreateFolderModalContent
+              onClose={() => setActiveModal(null)}
+              onCreate={(folderData) => {
+                showToast('success', `Folder "${folderData.name}" created in ${folderData.department}`);
+                setActiveModal(null);
+              }}
+            />
           </CenterModal>
         )}
         {activeModal === 'user' && (

@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { X, LogOut, UserCircle, ShieldCheck, Plus, File, FolderTree, Activity, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useState, useEffect } from 'react';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -11,6 +12,22 @@ interface MobileMenuProps {
 
 export function MobileMenu({ isOpen, onClose, onModalOpen, onNavigate }: MobileMenuProps) {
   const { user, signOut } = useAuth();
+  const [profilePicture, setProfilePicture] = useState<string | null>(
+    localStorage.getItem('profilePicture')
+  );
+
+  // Listen for profile picture changes
+  useState(() => {
+    const handleStorageChange = () => {
+      setProfilePicture(localStorage.getItem('profilePicture'));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('profilePictureChanged', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('profilePictureChanged', handleStorageChange);
+    };
+  });
 
   const handleLogout = async () => {
     try {
@@ -65,7 +82,7 @@ export function MobileMenu({ isOpen, onClose, onModalOpen, onNavigate }: MobileM
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
               <img
-                src="https://picsum.photos/seed/doc/100/100"
+                src={profilePicture || 'https://picsum.photos/seed/doc/100/100'}
                 className="w-12 h-12 rounded-full object-cover border border-white/10"
                 alt="User"
                 referrerPolicy="no-referrer"

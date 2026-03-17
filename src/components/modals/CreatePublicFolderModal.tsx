@@ -20,6 +20,25 @@ export function CreatePublicFolderModal({ onClose, onCreate }: CreatePublicFolde
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    
+    // Create new folder with proper structure
+    const newFolder = {
+      id: Date.now().toString(),
+      name: formData.name,
+      description: formData.description,
+      files: 0,
+      views: 0,
+      expiry: `${formData.expiryDays} days left`,
+      expiryDays: formData.expiryDays,
+      createdBy: 'current-user-id', // This should come from auth context
+      requiresApproval: formData.requiresApproval,
+    };
+
+    // Save to localStorage
+    const existingFolders = JSON.parse(localStorage.getItem('publicFolders') || '[]');
+    existingFolders.push(newFolder);
+    localStorage.setItem('publicFolders', JSON.stringify(existingFolders));
+
     onCreate(formData);
   };
 

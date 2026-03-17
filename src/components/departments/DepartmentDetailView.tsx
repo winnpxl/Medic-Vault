@@ -27,6 +27,11 @@ interface DepartmentDetailViewProps {
   onSearchChange: (query: string) => void;
   onPatientSelect: (patient: Patient) => void;
   onFolderSelect: (folderName: string) => void;
+  onShowToast?: (type: 'success' | 'error' | 'info', message: string) => void;
+  onUpdatePatient?: (patient: Patient) => void;
+  onArchivePatient?: (patientId: string) => void;
+  onDeletePatient?: (patientId: string) => void;
+  onOpenModal?: (patient: Patient, modalType: string) => void;
 }
 
 export function DepartmentDetailView({
@@ -40,6 +45,11 @@ export function DepartmentDetailView({
   onSearchChange,
   onPatientSelect,
   onFolderSelect,
+  onShowToast,
+  onUpdatePatient,
+  onArchivePatient,
+  onDeletePatient,
+  onOpenModal,
 }: DepartmentDetailViewProps) {
   const dept = DEPARTMENTS.find((d) => d.name === departmentName);
 
@@ -105,24 +115,17 @@ export function DepartmentDetailView({
                   onChange={(e) => onSearchChange(e.target.value)}
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <button className="flex items-center gap-2 px-3 py-2 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
-                  <Plus className="w-4 h-4" /> Status
-                </button>
-                <button className="flex items-center gap-2 px-3 py-2 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
-                  <Plus className="w-4 h-4" /> Department
-                </button>
-                <div className="h-6 w-px bg-white/5 mx-2"></div>
-                <button className="flex items-center gap-2 px-3 py-2 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors">
-                  <LayoutDashboard className="w-4 h-4" /> View
-                </button>
-              </div>
             </div>
 
             <PatientTable
               patients={patients}
               totalPatients={totalPatients}
               onPatientSelect={onPatientSelect}
+              onShowToast={onShowToast || (() => {})}
+              onUpdatePatient={onUpdatePatient || (() => {})}
+              onArchivePatient={onArchivePatient || (() => {})}
+              onDeletePatient={onDeletePatient || (() => {})}
+              onOpenModal={onOpenModal || (() => {})}
             />
           </>
         ) : deptTab === 'Files' ? (

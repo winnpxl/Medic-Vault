@@ -165,6 +165,25 @@ export function SettingsView({ onShowToast }: SettingsViewProps) {
 function ProfileSettings({ user, onShowToast }: any) {
   const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [email, setEmail] = useState(user?.email || '');
+  const [profilePicture, setProfilePicture] = useState<string | null>(
+    localStorage.getItem('profilePicture') || null
+  );
+
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        setProfilePicture(result);
+        localStorage.setItem('profilePicture', result);
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new Event('profilePictureChanged'));
+        onShowToast('success', 'Profile picture updated');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = () => {
     onShowToast('success', 'Profile updated successfully');
@@ -179,6 +198,35 @@ function ProfileSettings({ user, onShowToast }: any) {
 
       <div className="glass-card p-6 space-y-6">
         <div className="space-y-4">
+          {/* Profile Picture Upload */}
+          <div>
+            <label className="text-sm font-medium text-gray-400 mb-3 block">Profile Picture</label>
+            <div className="flex items-center gap-4">
+              <img
+                src={profilePicture || 'https://picsum.photos/seed/doc/100/100'}
+                className="w-20 h-20 rounded-full object-cover border-2 border-white/10"
+                alt="Profile"
+                referrerPolicy="no-referrer"
+              />
+              <div className="flex-1">
+                <input
+                  type="file"
+                  id="profile-picture"
+                  accept="image/*"
+                  onChange={handleProfilePictureChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="profile-picture"
+                  className="btn-secondary cursor-pointer inline-flex"
+                >
+                  Change Picture
+                </label>
+                <p className="text-xs text-gray-500 mt-2">JPG, PNG or GIF. Max size 2MB.</p>
+              </div>
+            </div>
+          </div>
+
           <div>
             <label className="text-sm font-medium text-gray-400 mb-2 block">Display Name</label>
             <input
@@ -504,14 +552,11 @@ function DataSettings({ onShowToast }: any) {
 // User Management Settings (Admin only)
 function UserManagementSettings({ onShowToast }: any) {
   return (
-    <div className="max-w-3xl space-y-8">
-      <div>
-        <h3 className="text-2xl font-bold mb-2">User Management</h3>
-        <p className="text-sm text-gray-400">Manage users and their permissions</p>
-      </div>
-
-      <div className="glass-card p-6">
-        <p className="text-gray-400 text-center py-8">User management interface coming soon</p>
+    <div className="h-full flex items-center justify-center">
+      <div className="max-w-3xl w-full">
+        <div className="glass-card p-6">
+          <p className="text-gray-400 text-center py-8">User management interface coming soon</p>
+        </div>
       </div>
     </div>
   );
@@ -520,14 +565,11 @@ function UserManagementSettings({ onShowToast }: any) {
 // Department Settings (Admin only)
 function DepartmentSettings({ onShowToast }: any) {
   return (
-    <div className="max-w-3xl space-y-8">
-      <div>
-        <h3 className="text-2xl font-bold mb-2">Department Settings</h3>
-        <p className="text-sm text-gray-400">Configure department-level settings</p>
-      </div>
-
-      <div className="glass-card p-6">
-        <p className="text-gray-400 text-center py-8">Department settings interface coming soon</p>
+    <div className="h-full flex items-center justify-center">
+      <div className="max-w-3xl w-full">
+        <div className="glass-card p-6">
+          <p className="text-gray-400 text-center py-8">Department settings interface coming soon</p>
+        </div>
       </div>
     </div>
   );
@@ -536,14 +578,11 @@ function DepartmentSettings({ onShowToast }: any) {
 // Audit Settings (Admin only)
 function AuditSettings({ onShowToast }: any) {
   return (
-    <div className="max-w-3xl space-y-8">
-      <div>
-        <h3 className="text-2xl font-bold mb-2">Audit Logs</h3>
-        <p className="text-sm text-gray-400">View system activity and audit trails</p>
-      </div>
-
-      <div className="glass-card p-6">
-        <p className="text-gray-400 text-center py-8">Audit logs interface coming soon</p>
+    <div className="h-full flex items-center justify-center">
+      <div className="max-w-3xl w-full">
+        <div className="glass-card p-6">
+          <p className="text-gray-400 text-center py-8">Audit logs interface coming soon</p>
+        </div>
       </div>
     </div>
   );
@@ -552,14 +591,11 @@ function AuditSettings({ onShowToast }: any) {
 // System Settings (Super Admin only)
 function SystemSettings({ onShowToast }: any) {
   return (
-    <div className="max-w-3xl space-y-8">
-      <div>
-        <h3 className="text-2xl font-bold mb-2">System Settings</h3>
-        <p className="text-sm text-gray-400">Configure system-wide settings</p>
-      </div>
-
-      <div className="glass-card p-6">
-        <p className="text-gray-400 text-center py-8">System settings interface coming soon</p>
+    <div className="h-full flex items-center justify-center">
+      <div className="max-w-3xl w-full">
+        <div className="glass-card p-6">
+          <p className="text-gray-400 text-center py-8">System settings interface coming soon</p>
+        </div>
       </div>
     </div>
   );

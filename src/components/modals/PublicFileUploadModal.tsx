@@ -1,42 +1,29 @@
 import { useState, useRef, ChangeEvent } from 'react';
-import { Plus, Upload, X, FileText } from 'lucide-react';
-import { DEPARTMENTS } from '../../constants';
+import { Upload, X, FileText } from 'lucide-react';
 
-interface FileUploadModalContentProps {
+interface PublicFileUploadModalProps {
   onClose?: () => void;
-  onUpload?: (fileData: UploadedFileData) => void;
+  onUpload?: (fileData: PublicUploadedFileData) => void;
 }
 
-interface UploadedFileData {
+interface PublicUploadedFileData {
   file: File;
-  department: string;
-  patientId: string;
-  patientName: string;
-  category: string;
   title: string;
   medicalCategory: string;
   dateOfDocument: string;
   priorityLevel: string;
   attendingPhysician: string;
   tags: string;
-  restrictToDepartment: boolean;
-  markAsSensitive: boolean;
 }
 
-export function FileUploadModalContent({ onClose, onUpload }: FileUploadModalContentProps) {
+export function PublicFileUploadModal({ onClose, onUpload }: PublicFileUploadModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [department, setDepartment] = useState(DEPARTMENTS[0].name);
-  const [patientId, setPatientId] = useState('4421');
-  const [patientName, setPatientName] = useState('John Okafor');
-  const [category, setCategory] = useState('Imaging');
   const [title, setTitle] = useState('');
   const [medicalCategory, setMedicalCategory] = useState('Lab Results');
   const [dateOfDocument, setDateOfDocument] = useState('');
   const [priorityLevel, setPriorityLevel] = useState('Normal');
   const [attendingPhysician, setAttendingPhysician] = useState('');
   const [tags, setTags] = useState('');
-  const [restrictToDepartment, setRestrictToDepartment] = useState(false);
-  const [markAsSensitive, setMarkAsSensitive] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -78,24 +65,18 @@ export function FileUploadModalContent({ onClose, onUpload }: FileUploadModalCon
       return;
     }
 
-    const fileData: UploadedFileData = {
+    const fileData: PublicUploadedFileData = {
       file: selectedFile,
-      department,
-      patientId,
-      patientName,
-      category,
       title,
       medicalCategory,
       dateOfDocument,
       priorityLevel,
       attendingPhysician,
       tags,
-      restrictToDepartment,
-      markAsSensitive,
     };
 
     // Store in localStorage for persistence
-    const existingFiles = JSON.parse(localStorage.getItem('uploadedFiles') || '[]');
+    const existingFiles = JSON.parse(localStorage.getItem('publicUploadedFiles') || '[]');
     const fileInfo = {
       ...fileData,
       fileName: selectedFile.name,
@@ -113,7 +94,7 @@ export function FileUploadModalContent({ onClose, onUpload }: FileUploadModalCon
         fileData: reader.result,
       };
       existingFiles.push(fileWithData);
-      localStorage.setItem('uploadedFiles', JSON.stringify(existingFiles));
+      localStorage.setItem('publicUploadedFiles', JSON.stringify(existingFiles));
       
       if (onUpload) {
         onUpload(fileData);
@@ -129,65 +110,7 @@ export function FileUploadModalContent({ onClose, onUpload }: FileUploadModalCon
     <div className="space-y-8">
       <section className="space-y-4">
         <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
-          Section 1: Location Context
-        </p>
-        <div className="space-y-3">
-          <div className="space-y-1.5">
-            <label className="text-xs text-gray-500 font-medium">Department</label>
-            <select
-              className="input-field w-full"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-            >
-              {DEPARTMENTS.map((dept) => (
-                <option key={dept.id} value={dept.name}>
-                  {dept.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="text-xs text-gray-500 font-medium">Patient ID</label>
-              <input
-                type="text"
-                className="input-field"
-                value={patientId}
-                onChange={(e) => setPatientId(e.target.value)}
-                placeholder="Patient ID"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs text-gray-500 font-medium">Patient Name</label>
-              <input
-                type="text"
-                className="input-field"
-                value={patientName}
-                onChange={(e) => setPatientName(e.target.value)}
-                placeholder="Patient Name"
-              />
-            </div>
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-xs text-gray-500 font-medium">Category</label>
-            <select
-              className="input-field w-full"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option>Imaging</option>
-              <option>Lab Results</option>
-              <option>Prescription</option>
-              <option>Consultation</option>
-              <option>Surgery</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
-          Section 2: File Upload
+          Section 1: File Upload
         </p>
         <div
           onDragOver={handleDragOver}
@@ -245,7 +168,7 @@ export function FileUploadModalContent({ onClose, onUpload }: FileUploadModalCon
 
       <section className="space-y-4">
         <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
-          Section 3: Required Metadata
+          Section 2: Required Metadata
         </p>
         <div className="space-y-4">
           <div className="space-y-1.5">
@@ -316,38 +239,6 @@ export function FileUploadModalContent({ onClose, onUpload }: FileUploadModalCon
               placeholder="Condition, treatment type, keywords"
               value={tags}
               onChange={(e) => setTags(e.target.value)}
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">
-          Section 4: Access Controls (Role-Aware)
-        </p>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Restrict to Department Only</span>
-            <button
-              onClick={() => setRestrictToDepartment(!restrictToDepartment)}
-              className={`w-10 h-5 rounded-full relative transition-colors ${
-                restrictToDepartment ? 'bg-orange-primary' : 'bg-white/10'
-              }`}
-            >
-              <div
-                className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-transform ${
-                  restrictToDepartment ? 'left-6' : 'left-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Mark as Sensitive</span>
-            <input
-              type="checkbox"
-              className="w-4 h-4 accent-orange-primary"
-              checked={markAsSensitive}
-              onChange={(e) => setMarkAsSensitive(e.target.checked)}
             />
           </div>
         </div>

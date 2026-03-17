@@ -139,13 +139,6 @@ export function DashboardView({
                 </>
               )}
             </div>
-            <button className="hidden lg:flex items-center gap-2 px-3 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap h-[38px]">
-              <Plus className="w-4 h-4" /> Department
-            </button>
-            <div className="hidden lg:block h-6 w-px bg-white/5 mx-2"></div>
-            <button className="hidden lg:flex items-center gap-2 px-3 bg-navy-900 border border-white/5 rounded-lg text-sm text-gray-400 hover:text-white transition-colors whitespace-nowrap h-[38px]">
-              <LayoutDashboard className="w-4 h-4" /> View
-            </button>
           </div>
         </div>
 

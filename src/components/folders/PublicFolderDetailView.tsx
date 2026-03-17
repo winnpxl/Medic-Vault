@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ChevronLeft,
   Search,
@@ -7,7 +7,6 @@ import {
   Share2,
   Trash2,
   FileText,
-  MoreHorizontal,
   Clock,
   Eye,
 } from 'lucide-react';
@@ -41,35 +40,48 @@ export function PublicFolderDetailView({
   onShowToast,
 }: PublicFolderDetailViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [files, setFiles] = useState<FileItem[]>([
-    {
-      id: '1',
-      name: 'cardiology_report_2026.pdf',
-      type: 'PDF',
-      size: '2.4 MB',
-      uploadedBy: 'Dr. Sarah Johnson',
-      uploadedDate: 'Mar 15, 2026',
-      downloads: 12,
-    },
-    {
-      id: '2',
-      name: 'patient_consent_form.pdf',
-      type: 'PDF',
-      size: '856 KB',
-      uploadedBy: 'Admin',
-      uploadedDate: 'Mar 14, 2026',
-      downloads: 45,
-    },
-    {
-      id: '3',
-      name: 'treatment_guidelines.docx',
-      type: 'DOCX',
-      size: '1.2 MB',
-      uploadedBy: 'Dr. Michael Chen',
-      uploadedDate: 'Mar 13, 2026',
-      downloads: 28,
-    },
-  ]);
+  const [files, setFiles] = useState<FileItem[]>([]);
+
+  useEffect(() => {
+    // Load files from localStorage
+    const savedFiles = localStorage.getItem(`publicFolder_${folder.name}_files`);
+    if (savedFiles) {
+      setFiles(JSON.parse(savedFiles));
+    } else {
+      // Initialize with default files
+      const defaultFiles: FileItem[] = [
+        {
+          id: '1',
+          name: 'cardiology_report_2026.pdf',
+          type: 'PDF',
+          size: '2.4 MB',
+          uploadedBy: 'Dr. Sarah Johnson',
+          uploadedDate: 'Mar 15, 2026',
+          downloads: 12,
+        },
+        {
+          id: '2',
+          name: 'patient_consent_form.pdf',
+          type: 'PDF',
+          size: '856 KB',
+          uploadedBy: 'Admin',
+          uploadedDate: 'Mar 14, 2026',
+          downloads: 45,
+        },
+        {
+          id: '3',
+          name: 'treatment_guidelines.docx',
+          type: 'DOCX',
+          size: '1.2 MB',
+          uploadedBy: 'Dr. Michael Chen',
+          uploadedDate: 'Mar 13, 2026',
+          downloads: 28,
+        },
+      ];
+      setFiles(defaultFiles);
+      localStorage.setItem(`publicFolder_${folder.name}_files`, JSON.stringify(defaultFiles));
+    }
+  }, [folder.name]);
 
   const filteredFiles = files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -84,7 +96,9 @@ export function PublicFolderDetailView({
   };
 
   const handleDelete = (fileId: string, fileName: string) => {
-    setFiles(files.filter((f) => f.id !== fileId));
+    const updatedFiles = files.filter((f) => f.id !== fileId);
+    setFiles(updatedFiles);
+    localStorage.setItem(`publicFolder_${folder.name}_files`, JSON.stringify(updatedFiles));
     onShowToast('success', `${fileName} deleted successfully`);
   };
 
@@ -191,12 +205,6 @@ export function PublicFolderDetailView({
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        className="p-1 text-gray-500 hover:text-white transition-colors"
-                        title="More options"
-                      >
-                        <MoreHorizontal className="w-4 h-4" />
                       </button>
                     </div>
                   </td>
