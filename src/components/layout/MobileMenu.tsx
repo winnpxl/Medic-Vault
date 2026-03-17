@@ -6,9 +6,10 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   onModalOpen: (modal: string) => void;
+  onNavigate?: (tab: string) => void;
 }
 
-export function MobileMenu({ isOpen, onClose, onModalOpen }: MobileMenuProps) {
+export function MobileMenu({ isOpen, onClose, onModalOpen, onNavigate }: MobileMenuProps) {
   const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
@@ -150,6 +151,7 @@ export function MobileMenu({ isOpen, onClose, onModalOpen }: MobileMenuProps) {
           <div className="mt-auto p-4 border-t border-white/10 space-y-2">
             <button
               onClick={() => {
+                if (onNavigate) onNavigate('settings');
                 onClose();
               }}
               className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left"

@@ -180,7 +180,7 @@ export function Sidebar({
               className="absolute bottom-full left-4 right-4 mb-2 bg-navy-900 border border-white/5 rounded-lg shadow-xl z-50 overflow-hidden"
             >
               {[
-                { label: 'Profile settings', icon: UserCircle, action: () => {} },
+                { label: 'Profile settings', icon: UserCircle, action: () => onTabChange('settings') },
                 { label: 'Log out', icon: LogOut, danger: true, action: handleLogout },
               ].map((item, i) => (
                 <button

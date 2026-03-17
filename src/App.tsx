@@ -12,6 +12,7 @@ import { DepartmentDetailView } from './components/departments/DepartmentDetailV
 import { FolderDetailView } from './components/departments/FolderDetailView';
 import { FoldersView } from './components/folders/FoldersView';
 import { PublicFolderDetailView } from './components/folders/PublicFolderDetailView';
+import { SettingsView } from './components/settings/SettingsView';
 import { DefaultView } from './components/common/DefaultView';
 import { ToastContainer, ToastProps } from './components/common/Toast';
 import { CenterModal } from './components/modals/CenterModal';
@@ -241,6 +242,8 @@ function AppContent() {
             onShowToast={showToast}
           />
         );
+      case 'settings':
+        return <SettingsView onShowToast={showToast} />;
       default:
         return <DefaultView activeTab={activeTab} />;
     }
@@ -250,8 +253,11 @@ function AppContent() {
     return (
       <div className="flex h-screen bg-navy-950 text-white items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-orange-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-gray-400">Loading...</p>
+          <div className="relative w-16 h-16 mx-auto">
+            <div className="absolute inset-0 border-4 border-orange-primary/20 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-orange-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+          <p className="text-sm text-gray-400">Loading your workspace...</p>
         </div>
       </div>
     );
@@ -312,6 +318,7 @@ function AppContent() {
               setActiveModal(modal);
               setIsMobileMenuOpen(false);
             }}
+            onNavigate={handleTabChange}
           />
         )}
       </AnimatePresence>

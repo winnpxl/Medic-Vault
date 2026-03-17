@@ -32,34 +32,51 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
-      if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setUser({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email || '',
-            displayName: userData.displayName || '',
-            role: userData.role || 'staff',
-            createdAt: userData.createdAt || new Date().toISOString(),
-            lastLogin: new Date().toISOString(),
-          });
-          
-          // Update last login
-          await setDoc(
-            doc(db, 'users', firebaseUser.uid),
-            { lastLogin: new Date().toISOString() },
-            { merge: true }
-          );
-        }
-      } else {
-        setUser(null);
+    // Set a maximum timeout for initial load (2 seconds)
+    const loadingTimeout = setTimeout(() => {
+      if (loading) {
+        setLoading(false);
       }
-      setLoading(false);
+    }, 2000);
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+      try {
+        if (firebaseUser) {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUser({
+              uid: firebaseUser.uid,
+              email: firebaseUser.email || '',
+              displayName: userData.displayName || '',
+              role: userData.role || 'staff',
+              createdAt: userData.createdAt || new Date().toISOString(),
+              lastLogin: new Date().toISOString(),
+            });
+            
+            // Update last login asynchronously (don't wait for it)
+            setDoc(
+              doc(db, 'users', firebaseUser.uid),
+              { lastLogin: new Date().toISOString() },
+              { merge: true }
+            ).catch(console.error);
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error('Error loading user:', error);
+        setUser(null);
+      } finally {
+        clearTimeout(loadingTimeout);
+        setLoading(false);
+      }
     });
 
-    return unsubscribe;
+    return () => {
+      clearTimeout(loadingTimeout);
+      unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, displayName: string, role: UserRole) => {
