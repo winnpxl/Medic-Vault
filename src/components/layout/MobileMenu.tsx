@@ -137,6 +137,7 @@ export function MobileMenu({ isOpen, onClose, onModalOpen, onNavigate }: MobileM
             <p className="text-xs text-gray-500 uppercase font-semibold mb-3">Management</p>
             <button
               onClick={() => {
+                if (onNavigate) onNavigate('activity');
                 onClose();
               }}
               className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-left"

@@ -14,6 +14,7 @@ import { FoldersView } from './components/folders/FoldersView';
 import { PublicFolderDetailView } from './components/folders/PublicFolderDetailView';
 import { SettingsView } from './components/settings/SettingsView';
 import { DefaultView } from './components/common/DefaultView';
+import { ActivityAuditView } from './components/activity/ActivityAuditView';
 import { ToastContainer, ToastProps } from './components/common/Toast';
 import { CenterModal } from './components/modals/CenterModal';
 import { RightModal } from './components/modals/RightModal';
@@ -259,6 +260,8 @@ function AppContent() {
             onCreateFolder={() => setActiveModal('public-folder')}
           />
         );
+      case 'activity':
+        return <ActivityAuditView />;
       case 'settings':
         return <SettingsView onShowToast={showToast} />;
       default:
