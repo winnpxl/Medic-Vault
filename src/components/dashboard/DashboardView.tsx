@@ -25,6 +25,7 @@ interface DashboardViewProps {
   onArchivePatient: (patientId: string) => void;
   onDeletePatient: (patientId: string) => void;
   onOpenModal: (patient: Patient, modalType: string) => void;
+  onAddPatient: () => void;
 }
 
 export function DashboardView({
@@ -41,6 +42,7 @@ export function DashboardView({
   onArchivePatient,
   onDeletePatient,
   onOpenModal,
+  onAddPatient,
 }: DashboardViewProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [isStatusOpen, setIsStatusOpen] = useState(false);

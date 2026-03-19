@@ -32,6 +32,7 @@ interface DepartmentDetailViewProps {
   onArchivePatient?: (patientId: string) => void;
   onDeletePatient?: (patientId: string) => void;
   onOpenModal?: (patient: Patient, modalType: string) => void;
+  onAddPatient?: () => void;
 }
 
 export function DepartmentDetailView({
@@ -50,6 +51,7 @@ export function DepartmentDetailView({
   onArchivePatient,
   onDeletePatient,
   onOpenModal,
+  onAddPatient,
 }: DepartmentDetailViewProps) {
   const dept = DEPARTMENTS.find((d) => d.name === departmentName);
 

@@ -23,6 +23,7 @@ import { CreateFolderModalContent } from './components/modals/CreateFolderModal'
 import { AddUserModalContent } from './components/modals/AddUserModal';
 import { CreateDepartmentModalContent } from './components/modals/CreateDepartmentModal';
 import { CreatePublicFolderModal } from './components/modals/CreatePublicFolderModal';
+import { AddPatientModal } from './components/modals/AddPatientModal';
 import { NotificationPanel } from './components/modals/NotificationPanel';
 import { NotificationSettingsModalContent } from './components/modals/NotificationSettingsModal';
 import { GrantEmergencyAccessModal } from './components/modals/GrantEmergencyAccessModal';
@@ -130,6 +131,12 @@ function AppContent() {
     }
   };
 
+  const handleAddPatient = (newPatient: Patient) => {
+    setPatients((prev) => [...prev, newPatient]);
+    showToast('success', `Patient ${newPatient.name} added successfully`);
+    setActiveModal(null);
+  };
+
   const filteredPatients = patients.filter((p) => {
     const query = searchQuery.toLowerCase();
     const matchesSearch =
@@ -196,6 +203,7 @@ function AppContent() {
           onArchivePatient={handleArchivePatient}
           onDeletePatient={handleDeletePatient}
           onOpenModal={openPatientModal}
+          onAddPatient={() => setActiveModal('add-patient')}
         />
       );
     }
@@ -217,6 +225,7 @@ function AppContent() {
             onArchivePatient={handleArchivePatient}
             onDeletePatient={handleDeletePatient}
             onOpenModal={openPatientModal}
+            onAddPatient={() => setActiveModal('add-patient')}
           />
         );
       case 'patients':
@@ -232,6 +241,7 @@ function AppContent() {
             onArchivePatient={handleArchivePatient}
             onDeletePatient={handleDeletePatient}
             onOpenModal={openPatientModal}
+            onAddPatient={() => setActiveModal('add-patient')}
           />
         );
       case 'departments':
@@ -436,6 +446,14 @@ function AppContent() {
                 showToast('success', `Emergency access granted to ${data.recipient} for ${data.duration} hour(s)`);
                 setActiveModal(null);
               }}
+            />
+          </CenterModal>
+        )}
+        {activeModal === 'add-patient' && (
+          <CenterModal title="Add New Patient" onClose={() => setActiveModal(null)}>
+            <AddPatientModal
+              onClose={() => setActiveModal(null)}
+              onAdd={handleAddPatient}
             />
           </CenterModal>
         )}

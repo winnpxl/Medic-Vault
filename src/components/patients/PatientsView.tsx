@@ -14,6 +14,7 @@ interface PatientsViewProps {
   onArchivePatient: (patientId: string) => void;
   onDeletePatient: (patientId: string) => void;
   onOpenModal: (patient: Patient, modalType: string) => void;
+  onAddPatient: () => void;
 }
 
 export function PatientsView({
@@ -27,6 +28,7 @@ export function PatientsView({
   onArchivePatient,
   onDeletePatient,
   onOpenModal,
+  onAddPatient,
 }: PatientsViewProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -58,7 +60,7 @@ export function PatientsView({
         <h2 className="text-xl lg:text-2xl font-bold">Patients Registry</h2>
         <button 
           className="hidden lg:flex btn-primary items-center gap-2 justify-center lg:justify-start"
-          onClick={() => onShowToast('info', 'Add New Patient feature coming soon')}
+          onClick={onAddPatient}
         >
           <UserPlus className="w-4 h-4" /> Add New Patient
         </button>
@@ -66,7 +68,7 @@ export function PatientsView({
 
       {/* Mobile FAB */}
       <button
-        onClick={() => onShowToast('info', 'Add New Patient feature coming soon')}
+        onClick={onAddPatient}
         className="lg:hidden fixed bottom-20 right-4 z-[60] w-14 h-14 bg-orange-primary rounded-full shadow-lg flex items-center justify-center hover:bg-orange-600 transition-colors"
       >
         <UserPlus className="w-6 h-6 text-white" />
