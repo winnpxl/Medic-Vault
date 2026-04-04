@@ -317,7 +317,8 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "15k+",
                 delay: 0,
                 offset: "lg:mt-0",
-                color: "text-white"
+                color: "text-white",
+                highlight: false
               },
               {
                 icon: BarChart,
@@ -325,7 +326,8 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "120+",
                 delay: 0.1,
                 offset: "lg:mt-20",
-                color: "text-white"
+                color: "text-white",
+                highlight: false
               },
               {
                 icon: Box,
@@ -333,7 +335,8 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "450+",
                 delay: 0.2,
                 offset: "lg:mt-8",
-                color: "text-white"
+                color: "text-white",
+                highlight: false
               },
               {
                 icon: FileText,
@@ -341,7 +344,8 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "08+",
                 delay: 0.3,
                 offset: "lg:mt-28",
-                color: "text-white"
+                color: "text-white",
+                highlight: false
               }
             ].map((card, idx) => (
               <motion.div
