@@ -287,119 +287,106 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       </section>
 
       {/* Public Medical Archives Section */}
-      <section className="py-32 px-6 relative overflow-hidden bg-[#070707]">
+      <section className="py-40 px-6 relative overflow-hidden bg-black">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-            <div className="flex-1 space-y-10">
-              <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest">
-                  <Globe className="w-4 h-4" />
-                  Open Access
-                </div>
-                <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight leading-tight">
-                  Public Medical Archives for Research & Training
-                </h2>
-                <p className="text-gray-400 text-lg leading-relaxed max-w-xl">
-                  Allow specific datasets to be viewed by the public or non-account holders without compromising core security. Ideal for research whitepapers, training manuals, and community health announcements.
-                </p>
+          {/* Section Header - Split Layout */}
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-24">
+            <div className="space-y-6 max-w-2xl">
+              <div className="flex items-center gap-4 text-gray-500 font-medium tracking-[0.2em] uppercase text-xs">
+                <span className="w-8 h-px bg-gray-800" />
+                Public Archives
+                <span className="w-8 h-px bg-gray-800" />
               </div>
-
-              <ul className="space-y-6">
-                <li className="flex items-start gap-4 group">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-primary/10 flex items-center justify-center mt-1">
-                    <CheckCircle className="w-4 h-4 text-orange-primary" />
-                  </div>
-                  <span className="text-gray-300 font-medium">Read-only files with no account required</span>
-                </li>
-                <li className="flex items-start gap-4 group">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-primary/10 flex items-center justify-center mt-1">
-                    <Shield className="w-4 h-4 text-orange-primary" />
-                  </div>
-                  <span className="text-gray-300 font-medium">Optional code-based access for protected folders</span>
-                </li>
-                <li className="flex items-start gap-4 group">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-primary/10 flex items-center justify-center mt-1">
-                    <Eye className="w-4 h-4 text-orange-primary" />
-                  </div>
-                  <span className="text-gray-300 font-medium">Track total views and anonymous interactions</span>
-                </li>
-              </ul>
-
-              <div className="pt-4">
-                <button
-                  onClick={onEnter}
-                  className="flex items-center gap-3 text-lg font-bold text-white hover:text-orange-primary transition-colors group"
-                >
-                  View Sample Public Folder
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
+              <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight leading-tight font-sans">
+                Secure dissemination for <br />
+                <span className="text-orange-primary ">Research & Training</span>
+              </h2>
             </div>
-
-            <div className="flex-1 w-full relative">
-              <div className="grid grid-cols-2 gap-6 lg:gap-8">
-                <div className="space-y-6 lg:space-y-8">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
-                  >
-                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <FileUser className="w-7 h-7 text-blue-400" />
-                    </div>
-                    <h4 className="text-2xl font-medium font-sans">Training Case <br />Studies</h4>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
-                  >
-                    <div className="w-14 h-14 rounded-2xl bg-gray-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <BarChart className="w-7 h-7 text-gray-400" />
-                    </div>
-                    <h4 className="text-2xl font-medium font-sans">Anonymous <br />Stats</h4>
-                  </motion.div>
-                </div>
-
-                <div className="space-y-6 lg:space-y-8 pt-12 lg:pt-16">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.1 }}
-                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
-                  >
-                    <div className="w-14 h-14 rounded-2xl bg-orange-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Box className="w-7 h-7 text-orange-primary" />
-                    </div>
-                    <h4 className="text-2xl font-medium font-sans">Public Health <br />Bulletins</h4>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 }}
-                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
-                  >
-                    <div className="w-14 h-14 rounded-2xl bg-orange-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <FileText className="w-7 h-7 text-orange-secondary" />
-                    </div>
-                    <h4 className="text-2xl font-medium font-sans">Compliance <br />Docs</h4>
-                  </motion.div>
-                </div>
-              </div>
+            <div className="max-w-md lg:text-right">
+              <p className="text-gray-400 text-lg leading-relaxed">
+                We combine high-level encryption with public accessibility to help institutions share critical datasets. Our solutions turn raw data into accessible experiences that connect, inspire, and drive clinical impact.
+              </p>
             </div>
+          </div>
+
+          {/* Staggered Grid Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-start">
+            {[
+              {
+                icon: FileUser,
+                label: "Training Case Studies",
+                value: "15k+",
+                delay: 0,
+                offset: "lg:mt-0",
+                color: "text-blue-400"
+              },
+              {
+                icon: BarChart,
+                label: "Trusted Health Partners",
+                value: "120+",
+                delay: 0.1,
+                offset: "lg:mt-20",
+                color: "text-orange-primary"
+              },
+              {
+                icon: Box,
+                label: "Public Folders Created",
+                value: "450+",
+                delay: 0.2,
+                offset: "lg:mt-8",
+                color: "text-emerald-400"
+              },
+              {
+                icon: FileText,
+                label: "Compliance Guidelines",
+                value: "08+",
+                delay: 0.3,
+                offset: "lg:mt-28",
+                color: "text-purple-400"
+              }
+            ].map((card, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: card.delay, duration: 0.6 }}
+                whileHover={{ y: -10 }}
+                className={`relative group ${card.offset}`}
+              >
+                <div className={`
+                  ${card.highlight
+                    ? "bg-gradient-to-br from-orange-primary/20 via-navy-900 to-navy-950 border-orange-primary/20"
+                    : "bg-[#0A0A0A] border-white/5"}
+                  border p-6 lg:p-7 min-h-[320px] flex flex-col justify-between transition-all duration-500
+                `}>
+                  {/* Decorative Corners */}
+                  <div className="absolute top-3 left-3 w-4 h-4 border-t border-l border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute bottom-3 right-3 w-4 h-4 border-b border-r border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  <div className="space-y-8 h-full flex flex-col justify-between relative z-10">
+                    <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center bg-black/40 group-hover:bg-white/5 transition-colors">
+                      <card.icon className={`w-6 h-6 ${card.color}`} />
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className="text-4xl lg:text-5xl font-bold text-white tracking-tighter">
+                        {card.value}
+                      </h3>
+                      <p className="text-gray-500 font-medium text-sm lg:text-base leading-tight max-w-[140px]">
+                        {card.label}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Trust Section / Logo Cloud */}
-      <section className="py-24 border-y border-white/5 bg-white/[0.02] overflow-hidden">
+      <section className="py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <p className="text-center text-sm font-semibold text-gray-500 uppercase tracking-[0.2em] mb-12">Trusted by Clinical Leaders Worldwide</p>
           <div className="flex flex-wrap justify-between items-center gap-12 lg:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
@@ -423,100 +410,104 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       </section>
 
       {/* Security CTA Section */}
-      <section className="py-32 px-6 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-full max-h-[500px] bg-orange-primary/5 rounded-full blur-[120px] -z-10" />
+      <section className="py-40 px-6 relative overflow-hidden bg-navy-950 border-y border-white/5">
+        {/* Glow & Grid Effects */}
+        <div className="absolute inset-0 grid-pattern [mask-image:radial-gradient(ellipse_at_center,black,transparent)] opacity-40 -z-10" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-full max-h-[600px] bg-orange-primary/10 rounded-full blur-[140px] -z-20 opacity-60" />
 
-        <div className="max-w-4xl mx-auto glass-card p-12 lg:p-20 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -ml-32 -mb-32" />
+        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-12">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="w-16 h-16 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center mx-auto mb-8 shadow-2xl backdrop-blur-xl"
+          >
+            <img src="/logo.png" alt="Medic Vault" className="w-10 h-10 object-contain" />
+          </motion.div>
 
-          <div className="space-y-10 relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">
-              <Lock className="w-4 h-4 text-orange-primary" />
-              HIPAA & GDPR Compliant Infrastructure
-            </div>
-
-            <h2 className="text-4xl lg:text-6xl font-bold tracking-tight leading-tight">
+          <div className="space-y-6">
+            <h2 className="text-4xl lg:text-5xl font-medium tracking-tight leading-tight">
               Ready to secure your <br />clinical workspace?
             </h2>
-
             <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
               Join thousands of medical professionals who trust Medic Vault for their most sensitive records. Secure, compliant, and infinitely scalable.
             </p>
+          </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-6 justify-center pt-4">
-              <button
-                onClick={onEnter}
-                className="btn-primary px-12 py-6 text-xl w-full sm:w-auto shadow-2xl shadow-orange-primary/20 hover:scale-105 active:scale-95 transition-all"
-              >
-                Get Started Now
-                <ArrowRight className="w-6 h-6" />
-              </button>
-              <button className="flex items-center gap-3 text-lg font-semibold hover:text-orange-primary transition-colors">
-                Contact Sales Team
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center gap-6 justify-center pt-8">
+            <button
+              onClick={onEnter}
+              className="bg-orange-primary text-white px-6 py-4 rounded-md text-lg font-medium hover:bg-white hover:text-orange-primary transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-orange-primary/20 flex items-center gap-3"
+            >
+              Get Started Now
+            </button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-20 border-t border-white/5 px-6 bg-[#050505]">
+      <footer className="py-24 px-6 bg-black border-t border-white/5 overflow-hidden relative">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-            <div className="col-span-1 md:col-span-1 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-24">
+            {/* Branding Column */}
+            <div className="space-y-8">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <img src="/logo.png" alt="Medic Vault Logo" className="w-7 h-7 object-contain" />
-                </div>
+                <img src="/logo.png" alt="Logo" className="w-8 h-8" />
                 <span className="text-xl font-bold tracking-tight">Medic Vault</span>
               </div>
-              <p className="text-gray-500 text-sm leading-relaxed">
+              <p className="text-gray-500 text-base leading-relaxed max-w-sm">
                 Empowering healthcare providers with state-of-the-art cryptographic security and seamless medical record management.
               </p>
-            </div>
-
-            <div className="space-y-6">
-              <h4 className="font-bold text-white uppercase text-xs tracking-widest">Platform</h4>
-              <ul className="space-y-4 text-sm text-gray-500">
-                <li><a href="#" className="hover:text-white transition-colors">Security Architecture</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">API Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Compliance Certs</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Vault Engine</a></li>
-              </ul>
-            </div>
-
-            <div className="space-y-6">
-              <h4 className="font-bold text-white uppercase text-xs tracking-widest">Company</h4>
-              <ul className="space-y-4 text-sm text-gray-500">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Success Stories</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Trust Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Legal Details</a></li>
-              </ul>
-            </div>
-
-            <div className="space-y-6">
-              <h4 className="font-bold text-white uppercase text-xs tracking-widest">Stay Updated</h4>
-              <div className="flex gap-2">
-                <input type="email" placeholder="email@vault.com" className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm flex-1 focus:outline-none focus:border-orange-primary/50" />
-                <button className="bg-orange-primary p-2 rounded-lg hover:bg-orange-primary/90 transition-colors">
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+              <div className="text-xs text-gray-600 font-medium">
+                © {new Date().getFullYear()} Medic Vault. All rights reserved.
               </div>
-              <p className="text-[10px] text-gray-600">Join our newsletter for the latest in health tech security.</p>
+            </div>
+
+            {/* Pages Column */}
+            <div>
+              <h4 className="text-white font-semibold text-sm uppercase tracking-widest mb-8">Pages</h4>
+              <ul className="space-y-4 text-gray-500 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">How it Works</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Testimonials</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
+              </ul>
+            </div>
+
+            {/* Resources Column */}
+            <div>
+              <h4 className="text-white font-semibold text-sm uppercase tracking-widest mb-8">Resources</h4>
+              <ul className="space-y-4 text-gray-500 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">Changelog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Licenses</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Style Guide</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Security Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">API Docs</a></li>
+              </ul>
+            </div>
+
+            {/* Social Column */}
+            <div>
+              <h4 className="text-white font-semibold text-sm uppercase tracking-widest mb-8">Social Media</h4>
+              <ul className="space-y-4 text-gray-500 text-sm">
+                <li><a href="#" className="hover:text-white transition-colors">X (Twitter)</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Discord</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">YouTube</a></li>
+              </ul>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center pt-10 border-t border-white/5 gap-6">
-            <div className="text-xs text-gray-600">
-              © 2026 Medic Vault Infrastructure. All rights reserved.
+          <div className="pt-10 border-t border-white/5 text-[11px] text-gray-600 flex flex-col md:flex-row justify-between gap-6 items-center">
+            <div className="flex gap-8 uppercase tracking-[0.2em] font-semibold">
+              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
             </div>
-            <div className="flex gap-8 text-[11px] text-gray-600 uppercase tracking-widest font-semibold">
-              <a href="#" className="hover:text-white transition-colors">Twitter</a>
-              <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
-              <a href="#" className="hover:text-white transition-colors">GitHub</a>
+            <div className="italic text-gray-500 uppercase tracking-widest">
+              Designed by Medic Vault Labs. Powered by Webflow.
             </div>
           </div>
         </div>
