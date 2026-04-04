@@ -118,7 +118,17 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
       </div>
 
       {/* Right Side - Auth Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex flex-col items-center justify-center p-8 relative">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="lg:hidden absolute top-8 left-8 flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back</span>
+          </button>
+        )}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -128,7 +138,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
             <h2 className="text-3xl font-bold">
               {showForgotPassword ? 'Reset Password' : isLogin ? 'Welcome Back' : 'Register or login'}
             </h2>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm">
               {showForgotPassword
                 ? 'Enter your email to receive a password reset link'
                 : isLogin

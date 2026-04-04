@@ -39,6 +39,7 @@ import { AuthScreen } from './components/auth/AuthScreen';
 import { MobileNav } from './components/layout/MobileNav';
 import { MobileMenu } from './components/layout/MobileMenu';
 import { MobileHeader } from './components/layout/MobileHeader';
+import { LandingPage } from './components/landing/LandingPage';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -57,6 +58,7 @@ function AppContent() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [toasts, setToasts] = useState<ToastProps[]>([]);
   const [modalPatient, setModalPatient] = useState<Patient | null>(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -284,7 +286,10 @@ function AppContent() {
   }
 
   if (!user) {
-    return <AuthScreen />;
+    if (showAuth) {
+      return <AuthScreen onBack={() => setShowAuth(false)} />;
+    }
+    return <LandingPage onEnter={() => setShowAuth(true)} />;
   }
 
   return (
