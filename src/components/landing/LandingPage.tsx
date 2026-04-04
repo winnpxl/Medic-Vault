@@ -37,7 +37,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
           {/* Centered Desktop Links */}
           <div className="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-400">
             <a href="#" className="hover:text-white transition-colors">How it works</a>
-            <a href="#" className="hover:text-white transition-colors">Public Medical Folders</a>
+            <a href="#public-archives" className="hover:text-white transition-colors">Public Medical Folders</a>
             <a href="#" className="hover:text-white transition-colors">Hierarchy</a>
             <a href="#" className="hover:text-white transition-colors">About us</a>
             <a href="#" className="hover:text-white transition-colors">Get Help</a>
@@ -123,7 +123,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
             <div className="relative group">
               <div className="" />
               <img
-                src="/hero_vault.png"
+                src="/hero_vault.webp"
                 alt="Medic Vault Dashboard Mockup"
                 className="relative w-full h-auto object-cover rounded-2xl shadow-2xl"
               />
@@ -169,29 +169,29 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 icon: Lock,
                 title: "Bank-Grade Encryption",
                 desc: "Every file is encrypted using AES-256 both at rest and in transit, ensuring total privacy.",
-                color: "text-blue-400",
-                bg: "bg-blue-400/5"
+                color: "text-white",
+                bg: "bg-white/5"
               },
               {
                 icon: Activity,
                 title: "Real-time Monitoring",
                 desc: "Track every access attempt with granular audit logs and instant security alerts.",
-                color: "text-orange-primary",
-                bg: "bg-orange-primary/5"
+                color: "text-white",
+                bg: "bg-white/5"
               },
               {
                 icon: Users,
                 title: "Seamless Collaboration",
                 desc: "Securely share records between departments and external specialists with one click.",
-                color: "text-purple-400",
-                bg: "bg-purple-400/5"
+                color: "text-white",
+                bg: "bg-white/5"
               },
               {
                 icon: Smartphone,
                 title: "Mobile Portability",
                 desc: "Access critical patient data from any device, anywhere, with our optimized mobile vault.",
-                color: "text-emerald-400",
-                bg: "bg-emerald-400/5"
+                color: "text-white",
+                bg: "bg-white/5"
               }
             ].map((feature, idx) => (
               <motion.div
@@ -287,7 +287,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       </section>
 
       {/* Public Medical Archives Section */}
-      <section className="py-40 px-6 relative overflow-hidden bg-black">
+      <section id="public-archives" className="py-40 px-6 relative overflow-hidden bg-black">
         <div className="max-w-7xl mx-auto">
           {/* Section Header - Split Layout */}
           <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-24">
@@ -298,8 +298,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 <span className="w-8 h-px bg-gray-800" />
               </div>
               <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight leading-tight font-sans">
-                Secure dissemination for <br />
-                <span className="text-orange-primary ">Research & Training</span>
+                Secure dissemination for <span className="text-orange-primary ">Research & Training</span>
               </h2>
             </div>
             <div className="max-w-md lg:text-right">
@@ -318,7 +317,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "15k+",
                 delay: 0,
                 offset: "lg:mt-0",
-                color: "text-blue-400"
+                color: "text-white"
               },
               {
                 icon: BarChart,
@@ -326,7 +325,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "120+",
                 delay: 0.1,
                 offset: "lg:mt-20",
-                color: "text-orange-primary"
+                color: "text-white"
               },
               {
                 icon: Box,
@@ -334,7 +333,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "450+",
                 delay: 0.2,
                 offset: "lg:mt-8",
-                color: "text-emerald-400"
+                color: "text-white"
               },
               {
                 icon: FileText,
@@ -342,7 +341,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 value: "08+",
                 delay: 0.3,
                 offset: "lg:mt-28",
-                color: "text-purple-400"
+                color: "text-white"
               }
             ].map((card, idx) => (
               <motion.div
@@ -358,7 +357,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                   ${card.highlight
                     ? "bg-gradient-to-br from-orange-primary/20 via-navy-900 to-navy-950 border-orange-primary/20"
                     : "bg-[#0A0A0A] border-white/5"}
-                  border p-6 lg:p-7 min-h-[320px] flex flex-col justify-between transition-all duration-500
+                  border p-6 lg:p-7 flex flex-col justify-between transition-all duration-500
                 `}>
                   {/* Decorative Corners */}
                   <div className="absolute top-3 left-3 w-4 h-4 border-t border-l border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -373,7 +372,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                       <h3 className="text-4xl lg:text-5xl font-bold text-white tracking-tighter">
                         {card.value}
                       </h3>
-                      <p className="text-gray-500 font-medium text-sm lg:text-base leading-tight max-w-[140px]">
+                      <p className="text-grey-500 opacity-50 font-light text-sm lg:text-base leading-tight max-w-[140px]">
                         {card.label}
                       </p>
                     </div>
@@ -388,7 +387,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       {/* Trust Section / Logo Cloud */}
       <section className="py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-sm font-semibold text-gray-500 uppercase tracking-[0.2em] mb-12">Trusted by Clinical Leaders Worldwide</p>
+          <p className="text-center text-sm font-medium opacity-50 text-grey-800 uppercase tracking-[0.2em] mb-12">Trusted by Clinical Leaders Worldwide</p>
           <div className="flex flex-wrap justify-between items-center gap-12 lg:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
             <div className="text-2xl font-black italic tracking-tighter uppercase group cursor-default">
               <span className="group-hover:text-orange-primary transition-colors">Health</span>Link
@@ -506,8 +505,8 @@ export function LandingPage({ onEnter }: LandingPageProps) {
               <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
               <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
             </div>
-            <div className="italic text-gray-500 uppercase tracking-widest">
-              Designed by Medic Vault Labs. Powered by Webflow.
+            <div className="text-gray-500 tracking-widest">
+              Designed by Sam
             </div>
           </div>
         </div>
