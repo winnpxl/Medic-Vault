@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Shield, Activity, Users, ArrowRight, Lock, CheckCircle, Smartphone } from 'lucide-react';
+import { Shield, Activity, Users, ArrowRight, Lock, CheckCircle, Smartphone, Globe, Eye, FileUser, BarChart, Box, FileText } from 'lucide-react';
 
 interface LandingPageProps {
   onEnter: () => void;
@@ -52,7 +52,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
             </button>
             <button
               onClick={onEnter}
-              className="bg-white text-black px-5 sm:px-6 py-2.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-all hover:scale-105 active:scale-95"
+              className="bg-orange-primary text-white px-5 sm:px-6 py-2.5 rounded-md text-sm font-medium hover:bg-gray-100 hover:text-orange-primary transition-all hover:scale-105 active:scale-95"
             >
               Get started
             </button>
@@ -98,13 +98,13 @@ export function LandingPage({ onEnter }: LandingPageProps) {
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center gap-4 justify-center pt-2">
               <button
                 onClick={onEnter}
-                className="bg-white text-black px-8 py-4 rounded-full text-base font-bold hover:bg-gray-100 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5 w-full sm:w-auto"
+                className="bg-orange-primary text-white px-8 py-4 rounded-md text-base font-medium hover:bg-gray-100 hover:text-orange-primary transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5 w-full sm:w-auto"
               >
                 Onboard your institution
               </button>
               <button
                 onClick={onEnter}
-                className="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-4 rounded-full text-base font-bold transition-all w-full sm:w-auto"
+                className="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-4 rounded-md text-base font-medium transition-all w-full sm:w-auto"
               >
                 Explore public medical folders
               </button>
@@ -159,11 +159,11 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center space-y-4 max-w-2xl mx-auto">
-            <h2 className="text-3xl lg:text-5xl font-bold tracking-tight">Built for Medical Excellence</h2>
+            <h2 className="text-3xl lg:text-5xl font-semibold tracking-tight">Built for Medical Excellence</h2>
             <p className="text-gray-400 text-lg">Medic Vault provides the critical infrastructure needed to handle sensitive medical data at scale.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               {
                 icon: Lock,
@@ -201,13 +201,13 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ y: -8, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-                className="glass-card p-10 group relative overflow-hidden"
+                className="glass-card p-4 group relative overflow-hidden"
               >
                 <div className={`absolute top-0 right-0 w-32 h-32 ${feature.bg} rounded-full blur-3xl -mr-16 -mt-16 group-hover:opacity-100 opacity-50 transition-opacity`} />
                 <div className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform relative z-10`}>
                   <feature.icon className={`w-7 h-7 ${feature.color}`} />
                 </div>
-                <h3 className="text-2xl font-bold mb-4 relative z-10">{feature.title}</h3>
+                <h3 className="text-2xl font-semibold mb-4 relative z-10">{feature.title}</h3>
                 <p className="text-gray-400 leading-relaxed relative z-10">{feature.desc}</p>
               </motion.div>
             ))}
@@ -221,7 +221,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div className="space-y-12">
               <div className="space-y-6">
-                <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">Your health data flow, <br />reimagined for speed.</h2>
+                <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight">Your health data flow, <br />reimagined for speed.</h2>
                 <p className="text-gray-400 text-lg leading-relaxed">We've eliminated the friction in medical records management. From ingestion to audit, every step is optimized for security and performance.</p>
               </div>
 
@@ -280,6 +280,118 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                   transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                   className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-primary to-transparent opacity-50 pointer-events-none"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Public Medical Archives Section */}
+      <section className="py-32 px-6 relative overflow-hidden bg-[#070707]">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+            <div className="flex-1 space-y-10">
+              <div className="space-y-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest">
+                  <Globe className="w-4 h-4" />
+                  Open Access
+                </div>
+                <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight leading-tight">
+                  Public Medical Archives for Research & Training
+                </h2>
+                <p className="text-gray-400 text-lg leading-relaxed max-w-xl">
+                  Allow specific datasets to be viewed by the public or non-account holders without compromising core security. Ideal for research whitepapers, training manuals, and community health announcements.
+                </p>
+              </div>
+
+              <ul className="space-y-6">
+                <li className="flex items-start gap-4 group">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-primary/10 flex items-center justify-center mt-1">
+                    <CheckCircle className="w-4 h-4 text-orange-primary" />
+                  </div>
+                  <span className="text-gray-300 font-medium">Read-only files with no account required</span>
+                </li>
+                <li className="flex items-start gap-4 group">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-primary/10 flex items-center justify-center mt-1">
+                    <Shield className="w-4 h-4 text-orange-primary" />
+                  </div>
+                  <span className="text-gray-300 font-medium">Optional code-based access for protected folders</span>
+                </li>
+                <li className="flex items-start gap-4 group">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-primary/10 flex items-center justify-center mt-1">
+                    <Eye className="w-4 h-4 text-orange-primary" />
+                  </div>
+                  <span className="text-gray-300 font-medium">Track total views and anonymous interactions</span>
+                </li>
+              </ul>
+
+              <div className="pt-4">
+                <button
+                  onClick={onEnter}
+                  className="flex items-center gap-3 text-lg font-bold text-white hover:text-orange-primary transition-colors group"
+                >
+                  View Sample Public Folder
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex-1 w-full relative">
+              <div className="grid grid-cols-2 gap-6 lg:gap-8">
+                <div className="space-y-6 lg:space-y-8">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <FileUser className="w-7 h-7 text-blue-400" />
+                    </div>
+                    <h4 className="text-2xl font-medium font-sans">Training Case <br />Studies</h4>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 }}
+                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-gray-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <BarChart className="w-7 h-7 text-gray-400" />
+                    </div>
+                    <h4 className="text-2xl font-medium font-sans">Anonymous <br />Stats</h4>
+                  </motion.div>
+                </div>
+
+                <div className="space-y-6 lg:space-y-8 pt-12 lg:pt-16">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.1 }}
+                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-orange-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Box className="w-7 h-7 text-orange-primary" />
+                    </div>
+                    <h4 className="text-2xl font-medium font-sans">Public Health <br />Bulletins</h4>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 }}
+                    className="glass-card p-4 lg:p-12 space-y-6 aspect-square flex flex-col justify-center items-start hover:bg-white/5 transition-all group"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-orange-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <FileText className="w-7 h-7 text-orange-secondary" />
+                    </div>
+                    <h4 className="text-2xl font-medium font-sans">Compliance <br />Docs</h4>
+                  </motion.div>
+                </div>
               </div>
             </div>
           </div>
