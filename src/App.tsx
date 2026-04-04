@@ -42,7 +42,8 @@ import { MobileHeader } from './components/layout/MobileHeader';
 import { LandingPage } from './components/landing/LandingPage';
 
 function AppContent() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
+  const [loading, setLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [deptTab, setDeptTab] = useState('Patients');
@@ -59,6 +60,16 @@ function AppContent() {
   const [toasts, setToasts] = useState<ToastProps[]>([]);
   const [modalPatient, setModalPatient] = useState<Patient | null>(null);
   const [showAuth, setShowAuth] = useState(false);
+
+  // Smooth loading transition
+  useEffect(() => {
+    if (!authLoading) {
+      // Add a tiny delay to ensure everything is ready for a smooth transition
+      const timer = setTimeout(() => setLoading(false), 200);
+      return () => clearTimeout(timer);
+    }
+    setLoading(true);
+  }, [authLoading]);
 
   useEffect(() => {
     if (user) {
@@ -160,6 +171,15 @@ function AppContent() {
     setSelectedFolder(null);
     setSelectedPatient(null);
     setSelectedPublicFolder(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      setShowAuth(false); // Reset to landing page on logout
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const renderContent = () => {
@@ -294,15 +314,16 @@ function AppContent() {
 
   return (
     <div className="flex h-screen bg-navy-950 text-white overflow-hidden">
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
-        <Sidebar
-          activeTab={activeTab}
-          selectedDept={selectedDept}
-          onTabChange={handleTabChange}
-          onModalOpen={setActiveModal}
-        />
-      </div>
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block">
+            <Sidebar
+              activeTab={activeTab}
+              selectedDept={selectedDept}
+              onTabChange={handleTabChange}
+              onModalOpen={setActiveModal}
+              onLogout={handleLogout}
+            />
+          </div>
 
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Mobile Header */}

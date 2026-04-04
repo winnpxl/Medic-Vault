@@ -372,7 +372,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
                       <h3 className="text-4xl lg:text-5xl font-bold text-white tracking-tighter">
                         {card.value}
                       </h3>
-                      <p className="text-grey-500 opacity-50 font-light text-sm lg:text-base leading-tight max-w-[140px]">
+                      <p className="text-gray-500 opacity-50 font-light text-sm lg:text-base leading-tight max-w-[140px]">
                         {card.label}
                       </p>
                     </div>
@@ -387,7 +387,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       {/* Trust Section / Logo Cloud */}
       <section className="py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-sm font-medium opacity-50 text-grey-800 uppercase tracking-[0.2em] mb-12">Trusted by Clinical Leaders Worldwide</p>
+          <p className="text-center text-sm font-medium opacity-50 text-gray-800 uppercase tracking-[0.2em] mb-12">Trusted by Clinical Leaders Worldwide</p>
           <div className="flex flex-wrap justify-between items-center gap-12 lg:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
             <div className="text-2xl font-black italic tracking-tighter uppercase group cursor-default">
               <span className="group-hover:text-orange-primary transition-colors">Health</span>Link

@@ -17,6 +17,7 @@ interface SidebarProps {
   selectedDept: string | null;
   onTabChange: (tab: string) => void;
   onModalOpen: (modal: string) => void;
+  onLogout: () => void;
 }
 
 export function Sidebar({
@@ -24,6 +25,7 @@ export function Sidebar({
   selectedDept,
   onTabChange,
   onModalOpen,
+  onLogout,
 }: SidebarProps) {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -48,7 +50,7 @@ export function Sidebar({
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      await onLogout();
     } catch (error) {
       console.error('Logout error:', error);
     }
