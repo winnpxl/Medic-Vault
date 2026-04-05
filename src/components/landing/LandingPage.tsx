@@ -303,7 +303,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
             </div>
             <div className="max-w-md lg:text-right">
               <p className="text-gray-400 text-lg leading-relaxed">
-                We combine high-level encryption with public accessibility to help institutions share critical datasets. Our solutions turn raw data into accessible experiences that connect, inspire, and drive clinical impact.
+                We combine high-level encryption with public accessibility to help institutions share critical datasets.
               </p>
             </div>
           </div>
@@ -391,7 +391,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
       {/* Trust Section / Logo Cloud */}
       <section className="py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-sm font-medium opacity-50 text-gray-800 uppercase tracking-[0.2em] mb-12">Trusted by Clinical Leaders Worldwide</p>
+          <p className="text-center text-sm font-medium opacity-50 text-gray-400 uppercase tracking-[0.2em] mb-12">Trusted by Clinical Leaders Worldwide</p>
           <div className="flex flex-wrap justify-between items-center gap-12 lg:gap-20 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
             <div className="text-2xl font-black italic tracking-tighter uppercase group cursor-default">
               <span className="group-hover:text-orange-primary transition-colors">Health</span>Link

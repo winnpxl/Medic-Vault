@@ -82,6 +82,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
     <div className="min-h-screen bg-navy-950 text-white flex">
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-navy-900 to-navy-950 p-12 flex-col justify-between">
+        <div className="hidden lg:flex lg:w-1/2 flex-col gap-16 justify-start"> 
         {onBack && (
           <button
             onClick={onBack}
@@ -108,6 +109,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
               productivity.
             </p>
           </div>
+        </div>
         </div>
 
         <div className="flex gap-6 text-sm text-gray-500">
