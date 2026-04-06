@@ -59,9 +59,9 @@ export function Sidebar({
   return (
     <aside className="w-64 h-screen border-r border-white/5 flex flex-col shrink-0">
       <div className="p-6 flex items-center gap-3">
-        <img 
-          src="/logo.png" 
-          alt="Medic Vault Logo" 
+        <img
+          src="/logo.png"
+          alt="Medic Vault Logo"
           className="w-10 h-10 object-contain"
         />
         <div>
@@ -81,9 +81,8 @@ export function Sidebar({
               <span className="font-medium">Upload new</span>
             </div>
             <ChevronDown
-              className={`w-4 h-4 text-gray-500 group-hover:text-white transition-transform ${
-                isUploadOpen ? 'rotate-180' : ''
-              }`}
+              className={`w-4 h-4 text-gray-500 group-hover:text-white transition-transform ${isUploadOpen ? 'rotate-180' : ''
+                }`}
             />
           </button>
 
@@ -184,9 +183,8 @@ export function Sidebar({
             </p>
           </div>
           <ChevronDown
-            className={`w-4 h-4 text-gray-500 transition-transform ${
-              isUserMenuOpen ? 'rotate-180' : ''
-            }`}
+            className={`w-4 h-4 text-gray-500 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''
+              }`}
           />
         </button>
 
@@ -204,9 +202,8 @@ export function Sidebar({
               ].map((item, i) => (
                 <button
                   key={i}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors text-left ${
-                    item.danger ? 'text-red-500' : ''
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors text-left ${item.danger ? 'text-red-500' : ''
+                    }`}
                   onClick={() => {
                     item.action();
                     setIsUserMenuOpen(false);

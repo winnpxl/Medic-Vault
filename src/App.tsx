@@ -291,6 +291,10 @@ function AppContent() {
     }
   };
 
+  if (!user && !showAuth) {
+    return <LandingPage onEnter={() => setShowAuth(true)} />;
+  }
+
   if (loading) {
     return (
       <div className="flex h-screen bg-navy-950 text-white items-center justify-center">
@@ -299,31 +303,28 @@ function AppContent() {
             <div className="absolute inset-0 border-4 border-orange-primary/20 rounded-full"></div>
             <div className="absolute inset-0 border-4 border-orange-primary border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <p className="text-sm text-gray-400">Loading your workspace...</p>
+          <p className="text-sm text-gray-400">Loading...</p>
         </div>
       </div>
     );
   }
 
   if (!user) {
-    if (showAuth) {
-      return <AuthScreen onBack={() => setShowAuth(false)} />;
-    }
-    return <LandingPage onEnter={() => setShowAuth(true)} />;
+    return <AuthScreen onBack={() => setShowAuth(false)} />;
   }
 
   return (
     <div className="flex h-screen bg-navy-950 text-white overflow-hidden">
-          {/* Desktop Sidebar */}
-          <div className="hidden lg:block">
-            <Sidebar
-              activeTab={activeTab}
-              selectedDept={selectedDept}
-              onTabChange={handleTabChange}
-              onModalOpen={setActiveModal}
-              onLogout={handleLogout}
-            />
-          </div>
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <Sidebar
+          activeTab={activeTab}
+          selectedDept={selectedDept}
+          onTabChange={handleTabChange}
+          onModalOpen={setActiveModal}
+          onLogout={handleLogout}
+        />
+      </div>
 
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Mobile Header */}
