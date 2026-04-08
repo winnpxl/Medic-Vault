@@ -46,7 +46,7 @@ export function LandingPage({ onEnter }: LandingPageProps) {
           <div className="flex items-center gap-4 sm:gap-6">
             <button
               onClick={onEnter}
-              className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+              className="hidden sm:block text-sm font-medium text-gray-400 hover:text-white transition-colors"
             >
               Sign in
             </button>
