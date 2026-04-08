@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Shield, Activity, Users, ArrowRight, Lock, CheckCircle, Smartphone, Globe, Eye, FileUser, BarChart, Box, FileText } from 'lucide-react';
+import { Shield, Activity, Users, ArrowRight, Lock, CheckCircle, Smartphone, Globe, Eye, FileUser, BarChart, Box, FileText, Search, Video, UserCheck, Clock, Share2, Zap, RefreshCw, HardDrive, ShieldCheck } from 'lucide-react';
 
 interface LandingPageProps {
   onEnter: () => void;
@@ -151,6 +151,265 @@ export function LandingPage({ onEnter }: LandingPageProps) {
               <div className="text-3xl lg:text-4xl font-bold text-white tracking-tighter">ISO-27k</div>
               <div className="text-[10px] text-gray-500 uppercase tracking-[0.25em] font-bold">Certified</div>
             </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Powerful Features Section */}
+      <section className="py-32 px-6 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto space-y-20">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center space-y-6 max-w-3xl mx-auto"
+          >
+            <h2 className="text-4xl lg:text-5xl font-semibold tracking-tight leading-tight">
+              Powerful Features to Elevate Your File Management
+            </h2>
+            <p className="text-gray-400 text-lg leading-relaxed">
+              Experience seamless medical file management with advanced security, intuitive interfaces, and comprehensive tracking capabilities designed for healthcare professionals.
+            </p>
+          </motion.div>
+
+          {/* Main Features with Visual Mockups */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.2,
+                  delayChildren: 0.1,
+                },
+              },
+            }}
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          >
+            {/* Find Files Instantly */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+              }}
+              whileHover={{ y: -8 }}
+              className="glass-card p-6 group relative overflow-hidden"
+            >
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-primary/10 flex items-center justify-center group-hover:bg-orange-primary/20 transition-colors">
+                    <Search className="w-6 h-6 text-orange-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Find Files Instantly</h3>
+                    <p className="text-gray-400 text-sm">Advanced search and filtering</p>
+                  </div>
+                </div>
+
+                {/* File List Mockup */}
+                <div className="bg-navy-900/80 rounded-lg p-4 border border-white/5">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 p-2 bg-white/5 rounded-md">
+                      <div className="w-8 h-8 bg-blue-500/20 rounded flex items-center justify-center">
+                        <FileText className="w-4 h-4 text-blue-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-xs font-medium text-white">Lab_Results_2024.pdf</div>
+                        <div className="text-[10px] text-gray-500">2.4 MB • Today</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-2 hover:bg-white/5 rounded-md transition-colors">
+                      <div className="w-8 h-8 bg-green-500/20 rounded flex items-center justify-center">
+                        <FileText className="w-4 h-4 text-green-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-xs font-medium text-white">X-Ray_Scan_001.jpg</div>
+                        <div className="text-[10px] text-gray-500">8.1 MB • Yesterday</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-2 hover:bg-white/5 rounded-md transition-colors">
+                      <div className="w-8 h-8 bg-purple-500/20 rounded flex items-center justify-center">
+                        <FileText className="w-4 h-4 text-purple-400" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-xs font-medium text-white">Patient_History.docx</div>
+                        <div className="text-[10px] text-gray-500">1.2 MB • 2 days ago</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Capture & Share with Ease */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+              }}
+              whileHover={{ y: -8 }}
+              className="glass-card p-6 group relative overflow-hidden"
+            >
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-primary/10 flex items-center justify-center group-hover:bg-orange-primary/20 transition-colors">
+                    <Video className="w-6 h-6 text-orange-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Capture & Share with Ease</h3>
+                    <p className="text-gray-400 text-sm">Seamless collaboration tools</p>
+                  </div>
+                </div>
+
+                {/* Video Call Interface Mockup */}
+                <div className="bg-navy-900/80 rounded-lg p-4 border border-white/5">
+                  <div className="space-y-3">
+                    <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg p-3 text-center">
+                      <div className="w-12 h-12 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center">
+                        <Video className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="text-xs text-white font-medium">Dr. Sarah Wilson</div>
+                      <div className="text-[10px] text-gray-400">Cardiology Specialist</div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button className="flex-1 bg-green-500/20 text-green-400 py-2 px-3 rounded text-xs font-medium">
+                        Share Screen
+                      </button>
+                      <button className="flex-1 bg-orange-primary/20 text-orange-primary py-2 px-3 rounded text-xs font-medium">
+                        Send Files
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Know Who Files Accesses */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+              }}
+              whileHover={{ y: -8 }}
+              className="glass-card p-6 group relative overflow-hidden"
+            >
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-primary/10 flex items-center justify-center group-hover:bg-orange-primary/20 transition-colors">
+                    <UserCheck className="w-6 h-6 text-orange-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Know Who Files Accesses</h3>
+                    <p className="text-gray-400 text-sm">Complete audit trail</p>
+                  </div>
+                </div>
+
+                {/* User Access Dashboard Mockup */}
+                <div className="bg-navy-900/80 rounded-lg p-4 border border-white/5">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400">Recent Activity</span>
+                      <span className="text-orange-primary">Live</span>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3 p-2 bg-white/5 rounded">
+                        <div className="w-6 h-6 bg-green-500/20 rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-xs text-white">Dr. Johnson accessed</div>
+                          <div className="text-[10px] text-gray-500">2 minutes ago</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded">
+                        <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-xs text-white">Nurse Martinez viewed</div>
+                          <div className="text-[10px] text-gray-500">15 minutes ago</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Secondary Features Grid */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.1,
+                  delayChildren: 0.2,
+                },
+              },
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {[
+              {
+                icon: Clock,
+                title: "File Tracking",
+                description: "Monitor file access and modifications with detailed activity logs and timestamps.",
+              },
+              {
+                icon: Share2,
+                title: "Advanced File Sharing",
+                description: "Secure sharing with granular permissions, expiration dates, and access controls.",
+              },
+              {
+                icon: Zap,
+                title: "Seamless Integration",
+                description: "Connect with existing healthcare systems and third-party applications effortlessly.",
+              },
+              {
+                icon: RefreshCw,
+                title: "Multi-Device Sync",
+                description: "Access your files from any device with real-time synchronization across platforms.",
+              },
+              {
+                icon: HardDrive,
+                title: "Automatic Backup",
+                description: "Never lose important data with automated backups and version control.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Bank-Level Security",
+                description: "Military-grade encryption and compliance with healthcare security standards.",
+              },
+            ].map((feature, idx) => (
+              <motion.div
+                key={idx}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+                }}
+                whileHover={{ y: -5, backgroundColor: "rgba(255, 255, 255, 0.03)" }}
+                className="glass-card p-6 group relative overflow-hidden"
+              >
+                <div className="space-y-4">
+                  <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-orange-primary/10 transition-colors">
+                    <feature.icon className="w-6 h-6 text-white group-hover:text-orange-primary transition-colors" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
