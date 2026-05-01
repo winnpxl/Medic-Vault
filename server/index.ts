@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import { requireAuth, requireRole } from "./auth";
 import { config } from "./config";
 import { errorHandler, notFoundHandler } from "./errors";
+import { findPatients, getPatientStats } from "./repositories/patient-repository";
 import { applySecurityMiddleware } from "./security";
 import { patientQuerySchema } from "./validation";
 
@@ -21,46 +22,21 @@ async function startServer() {
     });
   });
 
-  // Mock API for Patients
-  const patientsPath = path.join(__dirname, "..", "src", "patients.json");
-  let patients = [];
-  try {
-    const fs = await import("fs/promises");
-    const data = await fs.readFile(patientsPath, "utf-8");
-    patients = JSON.parse(data);
-  } catch (error) {
-    console.error("Error reading patients.json:", error);
-    // Fallback or empty list
-  }
-
   const api = express.Router();
   api.use(requireAuth);
 
   api.get("/patients", (req, res, next) => {
     try {
       const query = patientQuerySchema.parse(req.query);
-      const filtered = patients.filter((patient: Record<string, unknown>) => {
-        if (query.department && patient.department !== query.department) return false;
-        if (query.status && patient.status !== query.status) return false;
-        if (query.search) {
-          const haystack = `${String(patient.name ?? "")} ${String(patient.id ?? "")}`.toLowerCase();
-          return haystack.includes(query.search.toLowerCase());
-        }
-        return true;
-      });
-      res.json(filtered);
+      const patients = findPatients(query);
+      res.json(patients);
     } catch (error) {
       next(error);
     }
   });
 
   api.get("/stats", requireRole(["super_admin", "admin"]), (_req, res) => {
-    res.json({
-      recentlyAccessed: 89,
-      pendingReviews: 45,
-      externalShares: 231,
-      accessAlerts: 452,
-    });
+    res.json(getPatientStats());
   });
   app.use("/api", api);
 

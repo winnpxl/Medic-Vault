@@ -75,8 +75,23 @@ function AppContent() {
     if (user) {
       // Only fetch mock data for super_admin
       if (user.role === 'super_admin') {
-        fetchPatients().then(setPatients);
-        fetchStats().then(setStats);
+        fetchPatients()
+          .then(setPatients)
+          .catch((error) => {
+            console.error('Failed to load patients:', error);
+            setPatients([]);
+          });
+        fetchStats()
+          .then(setStats)
+          .catch((error) => {
+            console.error('Failed to load stats:', error);
+            setStats({
+              recentlyAccessed: 0,
+              pendingReviews: 0,
+              externalShares: 0,
+              accessAlerts: 0,
+            });
+          });
       } else {
         // New users start with empty data
         setPatients([]);
