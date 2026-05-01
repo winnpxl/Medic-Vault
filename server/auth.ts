@@ -57,6 +57,20 @@ function parseRole(value: unknown): AppRole {
 }
 
 export async function requireAuth(req: Request, _res: Response, next: NextFunction): Promise<void> {
+  if (config.isTest) {
+    const testUid = req.header("x-test-uid");
+    const testRole = req.header("x-test-role");
+    if (testUid && (testRole === "super_admin" || testRole === "admin" || testRole === "staff")) {
+      req.user = {
+        uid: testUid,
+        email: req.header("x-test-email") ?? undefined,
+        role: testRole,
+      };
+      next();
+      return;
+    }
+  }
+
   try {
     const token = extractBearerToken(req.header("authorization"));
     const decoded = await getAuth().verifyIdToken(token, true);

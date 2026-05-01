@@ -19,6 +19,7 @@ const prod = isProd();
 export const config = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   isProduction: prod,
+  isTest: process.env.NODE_ENV === "test",
   port: Number.parseInt(process.env.PORT ?? "3000", 10),
   host: process.env.HOST ?? "0.0.0.0",
   appBaseDir: process.cwd(),
