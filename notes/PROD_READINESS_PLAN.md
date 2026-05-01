@@ -15,9 +15,9 @@
 - [x] Add CORS allowlist, `helmet`, request size limits, and rate limiting.
 
 ## Phase 3 - Real Data Layer
-- [ ] Replace `src/patients.json` and hardcoded stats with database-backed services.
-- [ ] Add migrations and seed scripts.
-- [ ] Add repository/service layer boundaries.
+- [x] Replace `src/patients.json` and hardcoded stats with database-backed services.
+- [x] Add migrations and seed scripts (startup migration + seed on empty DB).
+- [x] Add repository/service layer boundaries.
 - [ ] Add audit log table and write events for access-sensitive actions.
 
 ## Phase 4 - Test and Quality Gates
