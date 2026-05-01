@@ -2,15 +2,21 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import { config } from "./config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
 
   app.use(express.json());
+  app.get("/health", (_req, res) => {
+    res.status(200).json({
+      status: "ok",
+      env: config.nodeEnv,
+    });
+  });
 
   // Mock API for Patients
   const patientsPath = path.join(__dirname, "..", "src", "patients.json");
@@ -38,21 +44,22 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  if (!config.isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(__dirname, "dist")));
+    const distPath = path.join(config.appBaseDir, "dist");
+    app.use(express.static(distPath));
     app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "dist", "index.html"));
+      res.sendFile(path.join(distPath, "index.html"));
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  app.listen(config.port, config.host, () => {
+    console.log(`Server running on http://localhost:${config.port}`);
   });
 }
 
