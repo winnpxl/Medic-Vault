@@ -8,11 +8,11 @@
 - [x] Add `/health` endpoint for basic uptime checks.
 
 ## Phase 2 - API Safety and Auth Enforcement
-- [ ] Add strict request/response schema validation for all API routes.
-- [ ] Add centralized error middleware with safe error shapes.
-- [ ] Add auth middleware that verifies Firebase ID tokens server-side.
-- [ ] Enforce role-based access control in API handlers.
-- [ ] Add CORS allowlist, `helmet`, request size limits, and rate limiting.
+- [x] Add strict request/response schema validation for all API routes (initial `/api/patients` query validation complete).
+- [x] Add centralized error middleware with safe error shapes.
+- [x] Add auth middleware that verifies Firebase ID tokens server-side.
+- [x] Enforce role-based access control in API handlers (admin route protection on `/api/stats`).
+- [x] Add CORS allowlist, `helmet`, request size limits, and rate limiting.
 
 ## Phase 3 - Real Data Layer
 - [ ] Replace `src/patients.json` and hardcoded stats with database-backed services.

@@ -2,15 +2,18 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import { requireAuth, requireRole } from "./auth";
 import { config } from "./config";
+import { errorHandler, notFoundHandler } from "./errors";
+import { applySecurityMiddleware } from "./security";
+import { patientQuerySchema } from "./validation";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-
-  app.use(express.json());
+  applySecurityMiddleware(app);
   app.get("/health", (_req, res) => {
     res.status(200).json({
       status: "ok",
@@ -30,11 +33,28 @@ async function startServer() {
     // Fallback or empty list
   }
 
-  app.get("/api/patients", (req, res) => {
-    res.json(patients);
+  const api = express.Router();
+  api.use(requireAuth);
+
+  api.get("/patients", (req, res, next) => {
+    try {
+      const query = patientQuerySchema.parse(req.query);
+      const filtered = patients.filter((patient: Record<string, unknown>) => {
+        if (query.department && patient.department !== query.department) return false;
+        if (query.status && patient.status !== query.status) return false;
+        if (query.search) {
+          const haystack = `${String(patient.name ?? "")} ${String(patient.id ?? "")}`.toLowerCase();
+          return haystack.includes(query.search.toLowerCase());
+        }
+        return true;
+      });
+      res.json(filtered);
+    } catch (error) {
+      next(error);
+    }
   });
 
-  app.get("/api/stats", (req, res) => {
+  api.get("/stats", requireRole(["super_admin", "admin"]), (_req, res) => {
     res.json({
       recentlyAccessed: 89,
       pendingReviews: 45,
@@ -42,6 +62,7 @@ async function startServer() {
       accessAlerts: 452,
     });
   });
+  app.use("/api", api);
 
   // Vite middleware for development
   if (!config.isProduction) {
@@ -53,10 +74,13 @@ async function startServer() {
   } else {
     const distPath = path.join(config.appBaseDir, "dist");
     app.use(express.static(distPath));
-    app.get("*", (req, res) => {
+    app.get("*", (_req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
 
   app.listen(config.port, config.host, () => {
     console.log(`Server running on http://localhost:${config.port}`);
