@@ -4,7 +4,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { requireAuth, requireRole } from "./auth";
 import { config } from "./config";
+import { checkDatabaseReadiness } from "./database";
 import { errorHandler, notFoundHandler } from "./errors";
+import { applyObservabilityMiddleware, initializeMonitoring } from "./observability";
 import { logAuditEvent } from "./repositories/audit-repository";
 import { findPatients, getPatientStats } from "./repositories/patient-repository";
 import { applySecurityMiddleware } from "./security";
@@ -22,11 +24,32 @@ function getClientIp(forwardedFor: string | undefined, fallbackIp: string | unde
 
 export async function createApp() {
   const app = express();
+  initializeMonitoring();
+  applyObservabilityMiddleware(app);
   applySecurityMiddleware(app);
   app.get("/health", (_req, res) => {
     res.status(200).json({
       status: "ok",
       env: config.nodeEnv,
+    });
+  });
+  app.get("/ready", (_req, res) => {
+    const dbReady = checkDatabaseReadiness();
+    if (!dbReady) {
+      res.status(503).json({
+        status: "not_ready",
+        dependencies: {
+          database: "down",
+        },
+      });
+      return;
+    }
+
+    res.status(200).json({
+      status: "ready",
+      dependencies: {
+        database: "up",
+      },
     });
   });
 

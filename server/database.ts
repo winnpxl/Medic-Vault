@@ -93,3 +93,12 @@ export function resetDatabaseForTests(): void {
   `);
   seedPatientsIfEmpty();
 }
+
+export function checkDatabaseReadiness(): boolean {
+  try {
+    const row = db.prepare("SELECT 1 AS ok").get() as { ok: number };
+    return row.ok === 1;
+  } catch (_error) {
+    return false;
+  }
+}
