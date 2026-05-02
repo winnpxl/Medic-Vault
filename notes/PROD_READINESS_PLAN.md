@@ -18,13 +18,13 @@
 - [x] Replace `src/patients.json` and hardcoded stats with database-backed services.
 - [x] Add migrations and seed scripts (startup migration + seed on empty DB).
 - [x] Add repository/service layer boundaries.
-- [ ] Add audit log table and write events for access-sensitive actions.
+- [x] Add audit log table and write events for access-sensitive actions.
 
 ## Phase 4 - Test and Quality Gates
-- [ ] Add unit tests for service logic.
-- [ ] Add API integration tests for critical routes.
-- [ ] Add end-to-end smoke tests for auth + patient list + details.
-- [ ] Enforce typecheck + tests in CI before merge.
+- [x] Add unit tests for service logic.
+- [x] Add API integration tests for critical routes.
+- [x] Add end-to-end smoke tests for auth + patient list + details.
+- [x] Enforce typecheck + tests in CI before merge.
 
 ## Phase 5 - Deployability and Observability
 - [ ] Add structured logging and request IDs.
