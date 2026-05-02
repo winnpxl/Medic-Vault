@@ -12,6 +12,15 @@ describe("api integration", () => {
     const app = await createApp();
     const response = await request(app).get("/api/patients");
     expect(response.status).toBe(401);
+    expect(response.headers["x-request-id"]).toBeDefined();
+  });
+
+  it("returns readiness status when dependencies are healthy", async () => {
+    const app = await createApp();
+    const response = await request(app).get("/ready");
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe("ready");
+    expect(response.body.dependencies.database).toBe("up");
   });
 
   it("allows staff to read patients and writes audit log", async () => {

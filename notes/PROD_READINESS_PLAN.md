@@ -27,9 +27,9 @@
 - [x] Enforce typecheck + tests in CI before merge.
 
 ## Phase 5 - Deployability and Observability
-- [ ] Add structured logging and request IDs.
-- [ ] Add error monitoring (e.g., Sentry) with environment tagging.
-- [ ] Add readiness checks for dependent services.
+- [x] Add structured logging and request IDs.
+- [x] Add error monitoring (e.g., Sentry) with environment tagging.
+- [x] Add readiness checks for dependent services.
 - [ ] Configure staging and production deployment with environment promotion.
 
 ## Phase 6 - Medical Data Compliance Controls
