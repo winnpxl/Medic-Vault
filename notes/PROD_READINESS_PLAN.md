@@ -23,7 +23,7 @@
 ## Phase 4 - Test and Quality Gates
 - [x] Add unit tests for service logic.
 - [x] Add API integration tests for critical routes.
-- [ ] Add end-to-end smoke tests for auth + patient list + details.
+- [x] Add end-to-end smoke tests for auth + patient list + details.
 - [x] Enforce typecheck + tests in CI before merge.
 
 ## Phase 5 - Deployability and Observability
