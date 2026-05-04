@@ -30,7 +30,7 @@
 - [x] Add structured logging and request IDs.
 - [x] Add error monitoring (e.g., Sentry) with environment tagging.
 - [x] Add readiness checks for dependent services.
-- [ ] Configure staging and production deployment with environment promotion.
+- [x] Configure staging and production deployment with environment promotion.
 
 ## Phase 6 - Medical Data Compliance Controls
 - [ ] Define data retention/deletion policy.

@@ -1,0 +1,83 @@
+name: Deploy Promotion
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build_artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Verify
+        run: |
+          npm run lint
+          npm run test
+          npm run build
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+          if-no-files-found: error
+
+  deploy_staging:
+    needs: build_artifact
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+      - name: Deploy To Staging
+        env:
+          DEPLOY_TARGET: ${{ vars.STAGING_DEPLOY_TARGET }}
+          DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+        run: |
+          echo "Deploying commit ${GITHUB_SHA} to staging target ${DEPLOY_TARGET}"
+          test -n "${DEPLOY_TARGET}"
+          test -n "${DEPLOY_TOKEN}"
+          # Replace with your real staging deploy command:
+          # ./scripts/deploy.sh staging dist
+
+  deploy_production:
+    needs: deploy_staging
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+      - name: Deploy To Production
+        env:
+          DEPLOY_TARGET: ${{ vars.PRODUCTION_DEPLOY_TARGET }}
+          DEPLOY_TOKEN: ${{ secrets.PRODUCTION_DEPLOY_TOKEN }}
+        run: |
+          echo "Promoting commit ${GITHUB_SHA} to production target ${DEPLOY_TARGET}"
+          test -n "${DEPLOY_TARGET}"
+          test -n "${DEPLOY_TOKEN}"
+          # Replace with your real production deploy command:
+          # ./scripts/deploy.sh production dist
