@@ -33,7 +33,7 @@
 - [x] Configure staging and production deployment with environment promotion.
 
 ## Phase 6 - Medical Data Compliance Controls
-- [ ] Define data retention/deletion policy.
-- [ ] Ensure PHI-safe logging strategy.
-- [ ] Document encryption at rest/in transit controls.
-- [ ] Document incident response and access review procedures.
+- [x] Define data retention/deletion policy.
+- [x] Ensure PHI-safe logging strategy.
+- [x] Document encryption at rest/in transit controls.
+- [x] Document incident response and access review procedures.
