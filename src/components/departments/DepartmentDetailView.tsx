@@ -112,7 +112,7 @@ export function DepartmentDetailView({
                 <input
                   type="text"
                   placeholder="Filter patients..."
-                  className="w-full bg-navy-900 border border-white/5 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none"
+                  className="input-field pl-10"
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                 />
