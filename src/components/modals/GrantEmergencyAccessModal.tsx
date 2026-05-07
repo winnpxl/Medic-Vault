@@ -75,7 +75,7 @@ export function GrantEmergencyAccessModal({ onClose, onGrant }: GrantEmergencyAc
           <input
             type="text"
             placeholder="Search by name, ID, or department..."
-            className="w-full bg-navy-900 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-orange-primary"
+            className="input-field pl-10"
             value={patientSearch}
             onChange={(e) => setPatientSearch(e.target.value)}
           />
@@ -93,7 +93,7 @@ export function GrantEmergencyAccessModal({ onClose, onGrant }: GrantEmergencyAc
           <input
             type="text"
             placeholder="Search staff by name or role..."
-            className="w-full bg-navy-900 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-orange-primary"
+            className="input-field pl-10"
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
           />
@@ -106,7 +106,7 @@ export function GrantEmergencyAccessModal({ onClose, onGrant }: GrantEmergencyAc
           Role / Reason <span className="text-red-500">*</span>
         </label>
         <select
-          className="w-full bg-navy-900 border border-white/10 rounded-lg py-2 px-4 text-sm focus:outline-none focus:border-orange-primary"
+          className="input-field"
           value={role}
           onChange={(e) => setRole(e.target.value)}
         >
@@ -183,7 +183,7 @@ export function GrantEmergencyAccessModal({ onClose, onGrant }: GrantEmergencyAc
         </div>
         <textarea
           placeholder="Describe the clinical emergency that requires this access override..."
-          className="w-full bg-navy-900 border border-white/10 rounded-lg py-2 px-4 text-sm focus:outline-none focus:border-orange-primary min-h-[100px] resize-none"
+          className="input-field min-h-[100px] resize-none"
           value={justification}
           onChange={(e) => setJustification(e.target.value)}
         />

@@ -102,7 +102,7 @@ export function DashboardView({
               <input
                 type="text"
                 placeholder="Filter patients..."
-                className="bg-navy-900 border border-white/5 rounded-lg px-3 text-sm focus:outline-none w-full px:h-[44px] lg:w-auto h-[38px]"
+                className="input-field h-[38px] px-3"
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
               />

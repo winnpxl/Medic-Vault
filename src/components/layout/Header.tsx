@@ -16,7 +16,7 @@ export function Header({ searchQuery, onSearchChange, onNotificationsOpen, onEme
         <input
           type="text"
           placeholder="search patients, files, departments, e.t.c"
-          className="w-full bg-navy-900/50 border border-white/5 rounded-lg py-2 pl-10 pr-4 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-orange-primary/50 transition-colors light-mode:bg-white light-mode:border-gray-300 light-mode:text-gray-900"
+          className="input-field pl-10"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />

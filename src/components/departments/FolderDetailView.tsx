@@ -133,7 +133,7 @@ export function FolderDetailView({ folderName, departmentName, onBack }: FolderD
           <input
             type="text"
             placeholder="Search files..."
-            className="w-full bg-navy-900 border border-white/5 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none light-mode:bg-white light-mode:border-gray-300"
+            className="input-field pl-10"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
