@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Eye, EyeOff, Mail, Lock, User, Shield } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types';
 
@@ -10,6 +10,7 @@ interface AuthScreenProps {
 
 export function AuthScreen({ onBack }: AuthScreenProps) {
   const [isLogin, setIsLogin] = useState(true);
+  const [title, setTitle] = useState('mr');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -80,36 +81,31 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
 
   return (
     <div className="min-h-screen bg-navy-950 text-white flex">
-      {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-navy-900 to-navy-950 p-12 flex-col justify-between">
-        <div className="hidden lg:flex lg:w-1/2 flex-col gap-16 justify-start"> 
-        {onBack && (
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to home
-          </button>
-        )}
+        <div className="hidden lg:flex lg:w-1/2 flex-col gap-16 justify-start">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to home
+            </button>
+          )}
 
-        <div className="space-y-6">
-          <div className="flex items-center gap-3">
-            <img 
-              src="/logo.png" 
-              alt="Medic Vault Logo" 
-              className="w-12 h-12 object-contain"
-            />
-            <h1 className="text-3xl font-bold">Medic Vault</h1>
-          </div>
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <img src="/logo.png" alt="Medic Vault Logo" className="w-12 h-12 object-contain" />
+              <h1 className="text-3xl font-bold">Medic Vault</h1>
+            </div>
 
-          <div className="space-y-4 max-w-md">
-            <p className="text-lg text-gray-300">
-              Medic Vault is your complete people platform designed to simplify medical files storage and enhance
-              productivity.
-            </p>
+            <div className="space-y-4 max-w-md">
+              <p className="text-lg text-gray-300">
+                Medic Vault is your complete people platform designed to simplify medical files storage and enhance
+                productivity.
+              </p>
+            </div>
           </div>
-        </div>
         </div>
 
         <div className="flex gap-6 text-sm text-gray-500">
@@ -119,8 +115,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
         </div>
       </div>
 
-      {/* Right Side - Auth Form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 relative">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 relative">
         {onBack && (
           <button
             onClick={onBack}
@@ -134,30 +129,29 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md space-y-8"
+          className="w-full max-w-xl rounded-2xl border border-white/10 bg-navy-900/60 shadow-2xl shadow-black/40 backdrop-blur-xl px-5 py-6 sm:px-8 sm:py-8 space-y-7"
         >
-          <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold">
+          <div className="text-center space-y-2.5">
+            <h2 className="text-3xl font-semibold tracking-tight">
               {showForgotPassword ? 'Reset Password' : isLogin ? 'Welcome Back' : 'Register or login'}
             </h2>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-300/80 text-sm leading-relaxed max-w-md mx-auto">
               {showForgotPassword
                 ? 'Enter your email to receive a password reset link'
                 : isLogin
-                ? 'Sign in to access your dashboard'
-                : 'To keep things easy, just log in with your work email or hit that button to continue!'}
+                  ? 'Sign in to access your dashboard'
+                  : 'To keep things easy, just log in with your work email or hit that button to continue!'}
             </p>
           </div>
 
           {!showForgotPassword && (
             <>
-              {/* Social Login Buttons */}
               <div className="space-y-3">
-                <button 
+                <button
                   type="button"
                   onClick={handleGoogleSignIn}
                   disabled={loading}
-                  className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg py-3 px-4 flex items-center justify-center gap-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white/5 hover:bg-white/10 border border-white/15 rounded-xl py-3 px-4 flex items-center justify-center gap-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path
@@ -186,39 +180,37 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
                   <div className="w-full border-t border-white/10"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-navy-950 text-gray-500">or</span>
+                  <span className="px-4 bg-navy-900 text-gray-500">or</span>
                 </div>
               </div>
             </>
           )}
 
-          {/* Form */}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && !showForgotPassword && (
-              <div className="space-y-1.5">
-                <label className="text-sm text-gray-400">Title</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium tracking-wide uppercase text-gray-400">Title</label>
                 <select
-                  className="input-field"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value as UserRole)}
+                  className="w-full bg-navy-900/60 border border-white/10 rounded-xl py-3 px-4 text-sm text-white/95 focus:outline-none focus:ring-2 focus:ring-orange-primary/35 focus:border-orange-primary/45 transition-all"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 >
-                  <option value="<Mister>">Mr.</option>
-                  <option value="Missus">Mrs.</option>
-                  <option value="doctor">Doctor</option>
-                  <option value="admin">Dr. Mrs</option>
+                  <option value="mr">Mr.</option>
+                  <option value="mrs">Mrs.</option>
+                  <option value="ms">Ms.</option>
+                  <option value="dr">Dr.</option>
                 </select>
               </div>
             )}
 
             {!isLogin && !showForgotPassword && (
-              <div className="space-y-1.5">
-                <label className="text-sm text-gray-400">Full Name</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium tracking-wide uppercase text-gray-400">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-500" />
                   <input
                     type="text"
-                    className="input-field pl-11"
+                    className="w-full bg-navy-900/60 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white/95 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-primary/35 focus:border-orange-primary/45 transition-all"
                     placeholder="Seearr Pseveun"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
@@ -228,13 +220,13 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <label className="text-sm text-gray-400">Email</label>
+            <div className="space-y-2">
+              <label className="text-xs font-medium tracking-wide uppercase text-gray-400">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-500" />
                 <input
                   type="email"
-                  className="input-field pl-11"
+                  className="w-full bg-navy-900/60 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white/95 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-primary/35 focus:border-orange-primary/45 transition-all"
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -244,14 +236,14 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
             </div>
 
             {!showForgotPassword && (
-              <div className="space-y-1.5">
-                <label className="text-sm text-gray-400">Password</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium tracking-wide uppercase text-gray-400">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-500" />
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    className="input-field pl-11 pr-11"
-                    placeholder="••••••••"
+                    className="w-full bg-navy-900/60 border border-white/10 rounded-xl py-3 pl-11 pr-11 text-sm text-white/95 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-primary/35 focus:border-orange-primary/45 transition-all"
+                    placeholder="........"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -259,7 +251,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors p-1"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -268,10 +260,10 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
             )}
 
             {!isLogin && !showForgotPassword && (
-              <div className="space-y-1.5">
-                <label className="text-sm text-gray-400">Role</label>
+              <div className="space-y-2">
+                <label className="text-xs font-medium tracking-wide uppercase text-gray-400">Role</label>
                 <select
-                  className="input-field"
+                  className="w-full bg-navy-900/60 border border-white/10 rounded-xl py-3 px-4 text-sm text-white/95 focus:outline-none focus:ring-2 focus:ring-orange-primary/35 focus:border-orange-primary/45 transition-all"
                   value={role}
                   onChange={(e) => setRole(e.target.value as UserRole)}
                 >
@@ -297,7 +289,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
             )}
 
             {!isLogin && !showForgotPassword && (
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3.5">
                 <input
                   type="checkbox"
                   id="updates"
@@ -305,7 +297,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
                   onChange={(e) => setReceiveUpdates(e.target.checked)}
                   className="mt-1 w-4 h-4 rounded border-white/20 bg-navy-900 text-orange-primary focus:ring-orange-primary"
                 />
-                <label htmlFor="updates" className="text-sm text-gray-400">
+                <label htmlFor="updates" className="text-sm text-gray-300/90 leading-relaxed">
                   Receive feature updates and hiring tips. Get occasional insights, new feature releases,
                   and expert hiring tips in your inbox.
                 </label>
@@ -322,7 +314,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
               type={showForgotPassword ? 'button' : 'submit'}
               onClick={showForgotPassword ? handleForgotPassword : undefined}
               disabled={loading}
-              className="btn-primary w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-orange-primary py-3 text-sm font-semibold text-white shadow-lg shadow-orange-primary/20 transition-all hover:bg-orange-secondary hover:shadow-orange-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Please wait...' : showForgotPassword ? 'Send Reset Link' : isLogin ? 'Sign In' : 'Sign Up'}
             </button>
@@ -352,7 +344,7 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
             )}
           </div>
 
-          <p className="text-center text-xs text-gray-600">
+          <p className="text-center text-xs text-gray-500">
             Medic Vault - Designed and Vibed by Samuel - All rights reserved ~kinda~.
           </p>
         </motion.div>
