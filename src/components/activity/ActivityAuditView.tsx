@@ -460,14 +460,16 @@ export function ActivityAuditView() {
           })}
 
           {filteredLogs.length === 0 && (
-            <div className="glass-card p-12 text-center">
-              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ActivityIcon className="w-8 h-8 text-gray-500" />
+            <div className="empty-state-page">
+              <div className="glass-card p-12 text-center w-full max-w-xl">
+                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ActivityIcon className="w-8 h-8 text-gray-500" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">No audit logs found</h3>
+                <p className="text-sm text-gray-400">
+                  Try adjusting your filters or search query
+                </p>
               </div>
-              <h3 className="text-lg font-semibold mb-2">No audit logs found</h3>
-              <p className="text-sm text-gray-400">
-                Try adjusting your filters or search query
-              </p>
             </div>
           )}
         </div>
@@ -517,14 +519,16 @@ export function ActivityAuditView() {
           </table>
 
           {filteredLogs.length === 0 && (
-            <div className="p-12 text-center">
-              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                <ActivityIcon className="w-8 h-8 text-gray-500" />
+            <div className="empty-state-page">
+              <div className="text-center w-full max-w-xl">
+                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ActivityIcon className="w-8 h-8 text-gray-500" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">No audit logs found</h3>
+                <p className="text-sm text-gray-400">
+                  Try adjusting your filters or search query
+                </p>
               </div>
-              <h3 className="text-lg font-semibold mb-2">No audit logs found</h3>
-              <p className="text-sm text-gray-400">
-                Try adjusting your filters or search query
-              </p>
             </div>
           )}
         </div>

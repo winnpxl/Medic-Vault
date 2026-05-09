@@ -152,4 +152,9 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  .empty-state-page {
+    @apply flex items-center justify-center text-center px-4;
+    min-height: clamp(22rem, 55vh, 40rem);
+  }
 }
