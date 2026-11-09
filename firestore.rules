@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// Paste into Firebase console → Firestore → Rules, then Publish.
+// Roles are granted only by the server/admin script (Admin SDK bypasses these rules).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // Self-registration always starts as staff.
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.role == 'staff';
+
+      // Users may update their own profile, but never their role.
+      allow update: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.role == resource.data.role;
+
+      allow delete: if false;
+    }
+
+    // Everything else is server-only.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

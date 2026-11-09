@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { getFirestore } from "firebase-admin/firestore";
 import { config } from "./config";
 import { HttpError } from "./errors";
 
@@ -56,6 +57,22 @@ function parseRole(value: unknown): AppRole {
   return "staff";
 }
 
+// The user's role lives in Firestore at users/{uid}.role (single source of truth).
+// Firestore rules prevent users from changing their own role; scripts/manage-user.ts grants roles.
+const ROLE_CACHE_TTL_MS = 60_000;
+const roleCache = new Map<string, { role: AppRole; expires: number }>();
+
+async function lookupRole(uid: string): Promise<AppRole> {
+  const cached = roleCache.get(uid);
+  if (cached && cached.expires > Date.now()) {
+    return cached.role;
+  }
+  const snapshot = await getFirestore().doc(`users/${uid}`).get();
+  const role = parseRole(snapshot.get("role"));
+  roleCache.set(uid, { role, expires: Date.now() + ROLE_CACHE_TTL_MS });
+  return role;
+}
+
 export async function requireAuth(req: Request, _res: Response, next: NextFunction): Promise<void> {
   if (config.isTest) {
     const testUid = req.header("x-test-uid");
@@ -73,11 +90,13 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
 
   try {
     const token = extractBearerToken(req.header("authorization"));
-    const decoded = await getAuth().verifyIdToken(token, true);
+    // Revocation checks call the Admin API and need service-account credentials;
+    // in development we verify signature/expiry only (needs just the project ID).
+    const decoded = await getAuth().verifyIdToken(token, config.isProduction);
     req.user = {
       uid: decoded.uid,
       email: decoded.email,
-      role: parseRole(decoded.role),
+      role: await lookupRole(decoded.uid),
     };
     next();
   } catch (error) {
