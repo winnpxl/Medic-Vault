@@ -14,7 +14,8 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
-  const [role, setRole] = useState<UserRole>('staff');
+  // New accounts are always staff; roles are granted server-side (scripts/manage-user.ts).
+  const role: UserRole = 'staff';
   const [showPassword, setShowPassword] = useState(false);
   const [receiveUpdates, setReceiveUpdates] = useState(false);
   const [error, setError] = useState('');
@@ -256,23 +257,6 @@ export function AuthScreen({ onBack }: AuthScreenProps) {
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
-              </div>
-            )}
-
-            {!isLogin && !showForgotPassword && (
-              <div className="space-y-2">
-                <label className="text-xs font-medium tracking-wide uppercase text-gray-400">Role</label>
-                <select
-                  className="w-full bg-navy-900/60 border border-white/10 rounded-xl py-3 px-4 text-sm text-white/95 focus:outline-none focus:ring-2 focus:ring-orange-primary/35 focus:border-orange-primary/45 transition-all"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value as UserRole)}
-                >
-                  <option value="staff">Staff</option>
-                  <option value="nurse">Nurse</option>
-                  <option value="doctor">Doctor</option>
-                  <option value="admin">Admin</option>
-                  <option value="super_admin">Super Admin</option>
-                </select>
               </div>
             )}
 
