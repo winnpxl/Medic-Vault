@@ -30,6 +30,7 @@ export const config = {
   rateLimitWindowMs: Number.parseInt(process.env.RATE_LIMIT_WINDOW_MS ?? "900000", 10),
   rateLimitMaxRequests: Number.parseInt(process.env.RATE_LIMIT_MAX_REQUESTS ?? "200", 10),
   requestBodyLimit: process.env.REQUEST_BODY_LIMIT ?? "1mb",
+  trustProxyHops: Number.parseInt(process.env.TRUST_PROXY_HOPS ?? "0", 10),
   firebaseProjectId: process.env.FIREBASE_PROJECT_ID ?? process.env.VITE_FIREBASE_PROJECT_ID ?? "",
   firebaseClientEmail: process.env.FIREBASE_CLIENT_EMAIL ?? "",
   firebasePrivateKey: (process.env.FIREBASE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n"),

@@ -24,6 +24,9 @@ function getClientIp(forwardedFor: string | undefined, fallbackIp: string | unde
 
 export async function createApp() {
   const app = express();
+  // Number of reverse proxies in front of the app (e.g. Vercel rewrite + Railway edge = 2),
+  // so req.ip / rate limiting use the real client IP instead of the proxy's.
+  app.set("trust proxy", config.trustProxyHops);
   initializeMonitoring();
   applyObservabilityMiddleware(app);
   applySecurityMiddleware(app);
