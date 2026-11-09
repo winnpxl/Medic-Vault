@@ -212,8 +212,8 @@ export function PublicFolderDetailView({
               ))
             ) : (
               <tr>
-                <td colSpan={7} className="px-6 py-12 text-center">
-                  <div className="flex flex-col items-center gap-3 text-gray-500">
+                <td colSpan={7} className="px-6">
+                  <div className="empty-state-page flex-col gap-3 text-gray-500">
                     <FileText className="w-12 h-12 opacity-20" />
                     <p className="text-sm">No files found</p>
                   </div>

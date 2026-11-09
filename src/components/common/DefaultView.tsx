@@ -7,7 +7,7 @@ interface DefaultViewProps {
 
 export function DefaultView({ activeTab }: DefaultViewProps) {
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 empty-state-page">
       <div className="text-center max-w-md px-4">
         <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <FolderTree className="w-10 h-10 text-gray-600" />

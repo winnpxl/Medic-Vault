@@ -166,15 +166,17 @@ export function DepartmentDetailView({
             ))}
           </div>
         ) : (
-          <div className="glass-card p-12 text-center space-y-4">
-            <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto text-gray-500">
-              <LayoutDashboard className="w-8 h-8" />
-            </div>
-            <div>
-              <h4 className="font-bold text-lg">No data available</h4>
-              <p className="text-gray-500 text-sm">
-                This section is currently being updated with real-time department data.
-              </p>
+          <div className="empty-state-page">
+            <div className="glass-card p-12 text-center space-y-4 w-full max-w-xl">
+              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto text-gray-500">
+                <LayoutDashboard className="w-8 h-8" />
+              </div>
+              <div>
+                <h4 className="font-bold text-lg">No data available</h4>
+                <p className="text-gray-500 text-sm">
+                  This section is currently being updated with real-time department data.
+                </p>
+              </div>
             </div>
           </div>
         )}
