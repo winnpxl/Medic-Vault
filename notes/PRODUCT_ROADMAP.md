@@ -205,7 +205,7 @@ Each phase ships to production behind the previous one and has a clear **"done w
 ### Phase 0: Foundations (1–2 weeks)
 _Make the codebase able to support real, multi-tenant data._
 
-- [ ] Migrate `railway.json` to `.railway/railway.ts` **(deadline: 2026-12-01)**.
+- [x] Migrate `railway.json` to `.railway/railway.ts` **(deadline: 2026-12-01)**.
 - [ ] Add **React Router**, with a URL for every screen (`/app/:orgSlug/patients/:id`, …).
 - [ ] Add **TanStack Query**, with one API client that sends the auth token and the active org.
 - [ ] Provision **Railway Postgres** (same project and region as the API). Add **Drizzle**, migrations and a seed script for demo data.
@@ -388,4 +388,4 @@ No major cloud (AWS, Google Cloud, Azure) has a region in Nigeria; the nearest a
 | **M5: Sharing** | 6 | Public Medical Folders. |
 | **M6: Enterprise** | 7 | SSO, billing, integrations, hospital groups. |
 
-**Next step:** D1–D5 are decided. Phase 0 starts with the `railway.json` migration (time-sensitive), Railway Postgres + Drizzle, and React Router.
+**Next step:** D1–D5 are decided. The `railway.json` migration is done; Phase 0 continues with Railway Postgres + Drizzle and React Router.
