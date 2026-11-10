@@ -208,7 +208,7 @@ _Make the codebase able to support real, multi-tenant data._
 - [ ] Migrate `railway.json` to `.railway/railway.ts` **(deadline: 2026-12-01)**.
 - [ ] Add **React Router**, with a URL for every screen (`/app/:orgSlug/patients/:id`, …).
 - [ ] Add **TanStack Query**, with one API client that sends the auth token and the active org.
-- [ ] Provision **Postgres**. Add **Drizzle**, migrations and a seed script for demo data.
+- [ ] Provision **Railway Postgres** (same project and region as the API). Add **Drizzle**, migrations and a seed script for demo data.
 - [ ] Set up **object storage** (R2/S3): upload/download through short-lived signed URLs, with size and type limits.
 - [ ] Mark everything mock as **"Demo data"** in the UI, or hide it, so nobody mistakes it for real data.
 - [ ] Code-split the bundle: the landing page and the app load separately.
@@ -342,8 +342,8 @@ Starting proposal:
 | # | Decision | Status | Outcome / recommendation |
 | --- | --- | --- | --- |
 | D1 | Primary market / regulation | ✅ **Decided: Nigeria** | Nigeria Data Protection Act 2023 + GAID 2025 (NDPC), National Health Act 2014. Health data is *sensitive personal data*. Cross-border storage is allowed only under NDPA ss. 41–43 (adequacy, NDPC approval or an approved transfer instrument). Get a Nigerian data-protection lawyer's opinion before real patient data. Billing via **Paystack**. |
-| D2 | Database | ⏳ **Options presented (see 7.1)** | Recommended: staged. Railway Postgres (EU West) for build and pilot → AWS RDS Cape Town (or in-country Lagos if a contract requires it) before real patient data. |
-| D3 | File storage | ⏳ **Options presented (see 7.1)** | Recommended: Cloudflare R2 (EU jurisdiction) for build and pilot → S3 in the same region as the database for production. Keep code on the S3 API so the move is config, not a rewrite. |
+| D2 | Database | ✅ **Decided: Railway Postgres (option A)** | Stay on Railway for now. Revisit before real patient data: AWS RDS Cape Town or in-country Lagos if a contract or the legal opinion requires it (see 7.1). Use standard Postgres + Drizzle only, so migration is a data move plus config. |
+| D3 | File storage | ✅ **Decided: S3-compatible storage alongside Railway (option A)** | Cloudflare R2 with EU jurisdiction (or a Railway storage bucket). Code talks to the S3 API only, so moving to S3 in the database's region later is config, not a rewrite. |
 | D4 | Multi-org membership | ✅ **Decided: yes** | A user can belong to several institutions (consultants, locums). Org switcher in Phase 1. |
 | D5 | Creating institutions | ✅ **Decided: self-serve + document verification** | Anyone can create an institution, but must submit documents (CAC certificate, facility licence, MDCN licence) for review. Limited until verified; platform-admin review queue. See Phase 1. |
 | D6 | Pricing model | per seat / per facility / storage tiers / free tier | Decide before Phase 7. The data model doesn't depend on it. |
@@ -361,7 +361,7 @@ No major cloud (AWS, Google Cloud, Azure) has a region in Nigeria; the nearest a
 | **C. Hyperscaler Africa region** | AWS RDS Cape Town (or Azure/GCP Johannesburg) | S3 Cape Town | South Africa | Medium–high; API moves too | Strongest certifications, closest region. |
 | **D. In-country** | Postgres on AFRICLOUD Lagos or a Lagos data centre | Their object storage | Nigeria | Highest; more self-managed | Only true in-country option. When a customer demands it. |
 
-**Recommended path:** A now (move the Railway service to EU West, closer to Nigeria) with demo/non-identifiable data only → C (or D if a contract or the legal opinion requires it) before real patient data, at the end of Phase 4.
+**Chosen:** A now. **Recommended later path:** A now (move the Railway service to EU West, closer to Nigeria) with demo/non-identifiable data only → C (or D if a contract or the legal opinion requires it) before real patient data, at the end of Phase 4.
 
 ---
 
@@ -388,4 +388,4 @@ No major cloud (AWS, Google Cloud, Azure) has a region in Nigeria; the nearest a
 | **M5: Sharing** | 6 | Public Medical Folders. |
 | **M6: Enterprise** | 7 | SSO, billing, integrations, hospital groups. |
 
-**Next step:** choose D2/D3 from section 7.1. Then Phase 0 starts with the `railway.json` migration (time-sensitive) and React Router.
+**Next step:** D1–D5 are decided. Phase 0 starts with the `railway.json` migration (time-sensitive), Railway Postgres + Drizzle, and React Router.
