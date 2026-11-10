@@ -33,8 +33,10 @@ Rolling back: redeploy an earlier deployment from the Railway dashboard (Deploym
 
 - Project `medic-vault`, service `medic-vault`, environment `production`.
 - Source is GitHub `winnpxl/Medic-Vault`, branch `main`. The Railway GitHub App must have access to the repo.
-- `railway.json` sets the build (`npm run build`), the start (`npm start`), a `/health` healthcheck and restart on failure.
-  - Railway is deprecating `railway.json` in favour of `.railway/railway.ts`. It keeps working until **2026-12-01**. Migrate with `railway config migrate`.
+- Service config is **Infrastructure as Code** in `.railway/railway.ts` (replaces the deprecated `railway.json`): build (`npm run build`), start (`npm start`), `/health` healthcheck, restart on failure (5 retries), region, and the `/data` volume.
+  - Preview changes with `railway config plan` (read-only); apply with `railway config apply`. Always read the plan first: removing the volume from the file would detach it.
+  - Env vars are **not** managed by the file (`variables: { managed: false }`); set them in the Railway dashboard or with `railway variables`.
+  - The `railway` npm package (dev dependency) is the SDK the file imports.
 - Region: **EU West (Amsterdam, `europe-west4`)**, chosen as the closest Railway region to Nigeria. Change with `railway scale eu-west=1 us-west=0` (scale the old region to 0 in the same command). Keep Postgres in the same region.
 - Volume `medic-vault-volume` is mounted at `/data`. The database lives at `/data/medic-vault.db` and is seeded from `src/patients.json` when empty.
 
