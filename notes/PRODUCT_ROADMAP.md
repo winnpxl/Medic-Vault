@@ -132,7 +132,13 @@ Firestore would then be retired: profiles, memberships and roles move into Postg
 
 ```
 users             (id = firebase uid, email, name, avatar_url, created_at)
-organizations     (id, name, slug, type, country, logo_url, plan, created_by, created_at)
+organizations     (id, name, slug, type, country, state, logo_url, plan,
+                   verification_status[unverified|pending|verified|rejected], verified_at, verified_by,
+                   created_by, created_at)
+organization_verifications (id, organization_id, submitted_by, submitted_at, status[pending|approved|rejected|needs_more_info],
+                   reviewer_id, reviewed_at, rejection_reason, notes)
+verification_documents (id, verification_id, kind[cac_certificate|facility_license|mdcn_license|other],
+                   storage_key, file_name, mime, size_bytes, sha256, uploaded_at)
 facilities        (id, organization_id, name, address, is_default)
 departments       (id, organization_id, facility_id, name, parent_department_id?, created_at)
 memberships       (id, organization_id, user_id, role, status[active|suspended], title, employee_id, joined_at)
@@ -172,7 +178,8 @@ public_folder_views (id, public_folder_id, viewer_fingerprint, viewer_email?, vi
    - Departments: pick from templates (General Practice, Cardiology, Pediatrics, Laboratory, Radiology, …) or add your own.
    - Invite the team: paste emails or upload a CSV, and pick a role and department for each.
    - Optional: import patients from CSV, or skip and explore with sample data clearly labelled **"Demo"**.
-4. Land on the dashboard with a **setup checklist**, which disappears when complete.
+4. **Verify the institution** (can be done now or later from the checklist): upload the CAC certificate, the facility registration/licence from the State Ministry of Health or its agency (e.g. HEFAMAA in Lagos), and the Medical Director's MDCN practising licence. Status becomes **Pending review**.
+5. Land on the dashboard with a **setup checklist**, which disappears when complete. Until the institution is verified, a banner explains what's limited and shows the review status.
 
 ### J2: Join an institution (Staff)
 - **By invite:** email link → sign up or sign in → land inside the org with the role already set.
@@ -220,8 +227,14 @@ _The core idea: one person creates an institution, and others join it._
 - [ ] **Org switcher** in the sidebar for users with several memberships.
 - [ ] Move user profile and role data from Firestore into Postgres, then retire Firestore. `scripts/manage-user.ts` becomes a platform-admin tool.
 - [ ] Re-scope the existing patients API by `organization_id`. The 50 demo patients move into a "Demo Hospital" org.
+- [ ] **Institution verification (D5):**
+  - Tables `organization_verifications` and `verification_documents`; documents stored privately in object storage.
+  - Owner uploads documents (CAC certificate, facility registration/licence, MDCN licence of the Medical Director); status *unverified → pending → verified / rejected* (with reason, resubmission allowed).
+  - **Platform-admin review queue:** list pending institutions, view documents, approve / reject / ask for more info. Every decision is audited; the owner is emailed.
+  - **Limits until verified** (enforced on the server, not just hidden in the UI): demo data only, no real patient records, up to ~5 members, no Public Medical Folders, no billing.
+  - **"Verified" badge** wherever the institution is shown (org switcher, join screens, public folders).
 
-**Done when:** two separate institutions can be created, each invites members, and **an automated test proves that org A can't read, list or guess any of org B's records** through any endpoint.
+**Done when:** two separate institutions can be created, each invites members, and **an automated test proves that org A can't read, list or guess any of org B's records** through any endpoint. An unverified institution is blocked (server-side) from creating real patient records, and a platform admin can approve it from the review queue.
 
 ### Phase 2: Institution structure (1–2 weeks)
 _Facilities, departments and teams, and who belongs where._
@@ -324,18 +337,31 @@ Starting proposal:
 
 ---
 
-## 7. Decisions needed from you
+## 7. Decisions
 
-| # | Decision | Options | Recommendation |
+| # | Decision | Status | Outcome / recommendation |
 | --- | --- | --- | --- |
-| D1 | Primary market / regulation | Nigeria (NDPA 2023), US (HIPAA), EU/UK (GDPR), several | Pick the first market now. It drives hosting region, vendor agreements (e.g. HIPAA BAAs), consent and retention rules. |
-| D2 | Database | Postgres on Railway vs Neon vs Supabase | **Railway Postgres** to stay on one platform. Move to a managed provider with PITR and compliance certificates before handling real patient data. |
-| D3 | File storage | Cloudflare R2 vs AWS S3 vs Firebase Storage | **R2** (no egress fees) unless D1 needs a specific certified provider. |
-| D4 | Multi-org membership | allow a user in several orgs, or one only | **Allow several** (consultants, locums). It's cheap to support now and costly to add later. |
-| D5 | Self-serve vs approved institutions | anyone can create an org, or we verify institutions first | **Self-serve with verification badges.** Anyone can start; publishing public folders requires a verified institution. |
+| D1 | Primary market / regulation | ✅ **Decided: Nigeria** | Nigeria Data Protection Act 2023 + GAID 2025 (NDPC), National Health Act 2014. Health data is *sensitive personal data*. Cross-border storage is allowed only under NDPA ss. 41–43 (adequacy, NDPC approval or an approved transfer instrument). Get a Nigerian data-protection lawyer's opinion before real patient data. Billing via **Paystack**. |
+| D2 | Database | ⏳ **Options presented (see 7.1)** | Recommended: staged. Railway Postgres (EU West) for build and pilot → AWS RDS Cape Town (or in-country Lagos if a contract requires it) before real patient data. |
+| D3 | File storage | ⏳ **Options presented (see 7.1)** | Recommended: Cloudflare R2 (EU jurisdiction) for build and pilot → S3 in the same region as the database for production. Keep code on the S3 API so the move is config, not a rewrite. |
+| D4 | Multi-org membership | ✅ **Decided: yes** | A user can belong to several institutions (consultants, locums). Org switcher in Phase 1. |
+| D5 | Creating institutions | ✅ **Decided: self-serve + document verification** | Anyone can create an institution, but must submit documents (CAC certificate, facility licence, MDCN licence) for review. Limited until verified; platform-admin review queue. See Phase 1. |
 | D6 | Pricing model | per seat / per facility / storage tiers / free tier | Decide before Phase 7. The data model doesn't depend on it. |
 | D7 | Patient accounts | patients never log in vs a future patient portal | **Not in the first release**, but don't block it: patients live in their own table, linkable to a user later. |
-| D8 | Brand of tenant | "Institution", "Organization" or "Workspace" in the UI | **"Institution"** in the UI, `organization` in code. |
+| D8 | Brand of tenant | open | **"Institution"** in the UI, `organization` in code. |
+
+### 7.1 Hosting options for D2/D3 (Nigeria)
+
+No major cloud (AWS, Google Cloud, Azure) has a region in Nigeria; the nearest are in South Africa. Railway, Neon and Supabase have no African regions. The database, API and file storage must sit in the same place, so this is really a choice of where the whole system lives.
+
+| Option | Database | Files | Data location | Effort / cost | Fit |
+| --- | --- | --- | --- | --- | --- |
+| **A. Stay on Railway** | Railway Postgres | Cloudflare R2 (EU) | Europe (EU West) | Lowest | Build and pilot. Weakest compliance story. |
+| **B. Managed Postgres in Europe** | Supabase or Neon (Frankfurt) | R2 (EU) or Supabase Storage | Europe | Low; PITR and DB branching | Better DB tooling, same location story as A. |
+| **C. Hyperscaler Africa region** | AWS RDS Cape Town (or Azure/GCP Johannesburg) | S3 Cape Town | South Africa | Medium–high; API moves too | Strongest certifications, closest region. |
+| **D. In-country** | Postgres on AFRICLOUD Lagos or a Lagos data centre | Their object storage | Nigeria | Highest; more self-managed | Only true in-country option. When a customer demands it. |
+
+**Recommended path:** A now (move the Railway service to EU West, closer to Nigeria) with demo/non-identifiable data only → C (or D if a contract or the legal opinion requires it) before real patient data, at the end of Phase 4.
 
 ---
 
@@ -362,4 +388,4 @@ Starting proposal:
 | **M5: Sharing** | 6 | Public Medical Folders. |
 | **M6: Enterprise** | 7 | SSO, billing, integrations, hospital groups. |
 
-**Next step:** confirm decisions D1–D5. Then Phase 0 starts with the `railway.json` migration (time-sensitive) and React Router.
+**Next step:** choose D2/D3 from section 7.1. Then Phase 0 starts with the `railway.json` migration (time-sensitive) and React Router.
