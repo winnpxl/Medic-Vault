@@ -1,4 +1,6 @@
-import { db, type PatientRecord } from "../database";
+import { and, asc, eq, ilike, or, type SQL } from "drizzle-orm";
+import { db } from "../db/client";
+import { patients, type PatientRecord } from "../db/schema";
 
 type PatientFilters = {
   department?: string;
@@ -6,45 +8,38 @@ type PatientFilters = {
   search?: string;
 };
 
-export function findPatients(filters: PatientFilters): PatientRecord[] {
-  const conditions: string[] = [];
-  const params: Record<string, string> = {};
+export async function findPatients(filters: PatientFilters): Promise<PatientRecord[]> {
+  const conditions: SQL[] = [];
 
   if (filters.department) {
-    conditions.push("department = @department");
-    params.department = filters.department;
+    conditions.push(eq(patients.department, filters.department));
   }
   if (filters.status) {
-    conditions.push("status = @status");
-    params.status = filters.status;
+    conditions.push(eq(patients.status, filters.status));
   }
   if (filters.search) {
-    conditions.push("(LOWER(name) LIKE @search OR LOWER(id) LIKE @search)");
-    params.search = `%${filters.search.toLowerCase()}%`;
+    const pattern = `%${filters.search}%`;
+    conditions.push(or(ilike(patients.name, pattern), ilike(patients.id, pattern))!);
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
   return db
-    .prepare(
-      `SELECT id, name, age, status, files, department, last_updated AS lastUpdated
-       FROM patients
-       ${whereClause}
-       ORDER BY name ASC`,
-    )
-    .all(params) as PatientRecord[];
+    .select()
+    .from(patients)
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(asc(patients.name));
 }
 
-export function getPatientStats(): {
+export async function getPatientStats(): Promise<{
   recentlyAccessed: number;
   pendingReviews: number;
   externalShares: number;
   accessAlerts: number;
-} {
-  const total = (db.prepare("SELECT COUNT(*) AS count FROM patients").get() as { count: number }).count;
-  const icu = (db.prepare("SELECT COUNT(*) AS count FROM patients WHERE status = 'ICU'").get() as { count: number }).count;
-  const admitted = (
-    db.prepare("SELECT COUNT(*) AS count FROM patients WHERE status = 'Admitted'").get() as { count: number }
-  ).count;
+}> {
+  const [total, icu, admitted] = await Promise.all([
+    db.$count(patients),
+    db.$count(patients, eq(patients.status, "ICU")),
+    db.$count(patients, eq(patients.status, "Admitted")),
+  ]);
 
   return {
     recentlyAccessed: total,

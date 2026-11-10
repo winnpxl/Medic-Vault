@@ -8,6 +8,23 @@ on:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: medicvault
+          POSTGRES_PASSWORD: medicvault
+          POSTGRES_DB: medicvault_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U medicvault"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Tests run against real Postgres in CI (locally they use in-memory PGlite).
+      DATABASE_URL: postgres://medicvault:medicvault@localhost:5432/medicvault_test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +40,15 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Migrations match schema
+        run: |
+          npx drizzle-kit generate --name ci-check
+          git diff --exit-code -- drizzle || (echo "::error::server/db/schema.ts changed without a migration. Run npm run db:generate and commit drizzle/." && exit 1)
+          test -z "$(git status --porcelain -- drizzle)" || (echo "::error::Uncommitted migration generated. Run npm run db:generate and commit drizzle/." && git status --porcelain -- drizzle && exit 1)
+
+      - name: Apply migrations to Postgres
+        run: npm run db:migrate
 
       - name: Test
         run: npm run test

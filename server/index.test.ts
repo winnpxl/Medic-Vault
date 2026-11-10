@@ -1,11 +1,14 @@
 import request from "supertest";
+import { and, eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
-import { db, resetDatabaseForTests } from "./database";
+import { db } from "./db/client";
+import { auditLogs } from "./db/schema";
+import { resetDatabaseForTests } from "./db/seed";
 import { createApp } from "./index";
 
 describe("api integration", () => {
-  beforeEach(() => {
-    resetDatabaseForTests();
+  beforeEach(async () => {
+    await resetDatabaseForTests();
   });
 
   it("rejects unauthenticated access", async () => {
@@ -34,10 +37,10 @@ describe("api integration", () => {
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
 
-    const logCount = (
-      db.prepare("SELECT COUNT(*) AS count FROM audit_logs WHERE actor_uid = ? AND action = ?")
-        .get("test-staff-1", "patients.list") as { count: number }
-    ).count;
+    const logCount = await db.$count(
+      auditLogs,
+      and(eq(auditLogs.actorUid, "test-staff-1"), eq(auditLogs.action, "patients.list")),
+    );
     expect(logCount).toBe(1);
   });
 

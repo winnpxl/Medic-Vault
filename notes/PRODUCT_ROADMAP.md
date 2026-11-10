@@ -208,11 +208,13 @@ _Make the codebase able to support real, multi-tenant data._
 - [x] Migrate `railway.json` to `.railway/railway.ts` **(deadline: 2026-12-01)**.
 - [ ] Add **React Router**, with a URL for every screen (`/app/:orgSlug/patients/:id`, …).
 - [ ] Add **TanStack Query**, with one API client that sends the auth token and the active org.
-- [ ] Provision **Railway Postgres** (same project and region as the API). Add **Drizzle**, migrations and a seed script for demo data.
+- [x] Provision **Railway Postgres** (same project and region as the API). Add **Drizzle**, migrations and a seed script for demo data.
+  - Local dev and tests run on PGlite (in-process Postgres); CI and production use real Postgres.
 - [ ] Set up **object storage** (R2/S3): upload/download through short-lived signed URLs, with size and type limits.
 - [ ] Mark everything mock as **"Demo data"** in the UI, or hide it, so nobody mistakes it for real data.
 - [ ] Code-split the bundle: the landing page and the app load separately.
-- [ ] Remove the leftover `data/medic-vault.db` from git and drop the unused Google Fonts (Inter/Outfit) if they're confirmed unused.
+- [x] Remove the leftover `data/medic-vault.db` from git.
+- [ ] Drop the unused Google Fonts (Inter/Outfit) if they're confirmed unused.
 
 **Done when:** every screen has a URL, the API reads and writes Postgres through migrations, a file can be uploaded to and downloaded from object storage, and CI runs migrations against a test database.
 

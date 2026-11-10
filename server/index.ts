@@ -4,7 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { requireAuth, requireRole } from "./auth";
 import { config } from "./config";
-import { checkDatabaseReadiness } from "./database";
+import { checkDatabaseReadiness, dbDriver, runMigrations } from "./db/client";
+import { seedDemoPatientsIfEmpty } from "./db/seed";
 import { errorHandler, notFoundHandler } from "./errors";
 import { applyObservabilityMiddleware, initializeMonitoring } from "./observability";
 import { logAuditEvent } from "./repositories/audit-repository";
@@ -36,8 +37,8 @@ export async function createApp() {
       env: config.nodeEnv,
     });
   });
-  app.get("/ready", (_req, res) => {
-    const dbReady = checkDatabaseReadiness();
+  app.get("/ready", async (_req, res) => {
+    const dbReady = await checkDatabaseReadiness();
     if (!dbReady) {
       res.status(503).json({
         status: "not_ready",
@@ -59,12 +60,12 @@ export async function createApp() {
   const api = express.Router();
   api.use(requireAuth);
 
-  api.get("/patients", (req, res, next) => {
+  api.get("/patients", async (req, res, next) => {
     try {
       const query = patientQuerySchema.parse(req.query);
-      const patients = findPatients(query);
+      const patients = await findPatients(query);
       if (req.user) {
-        logAuditEvent({
+        await logAuditEvent({
           actorUid: req.user.uid,
           actorEmail: req.user.email,
           actorRole: req.user.role,
@@ -81,19 +82,23 @@ export async function createApp() {
     }
   });
 
-  api.get("/stats", requireRole(["super_admin", "admin"]), (req, res) => {
-    if (req.user) {
-      logAuditEvent({
-        actorUid: req.user.uid,
-        actorEmail: req.user.email,
-        actorRole: req.user.role,
-        action: "stats.read",
-        resourceType: "dashboard_stats",
-        ipAddress: getClientIp(req.header("x-forwarded-for"), req.ip),
-        userAgent: req.header("user-agent"),
-      });
+  api.get("/stats", requireRole(["super_admin", "admin"]), async (req, res, next) => {
+    try {
+      if (req.user) {
+        await logAuditEvent({
+          actorUid: req.user.uid,
+          actorEmail: req.user.email,
+          actorRole: req.user.role,
+          action: "stats.read",
+          resourceType: "dashboard_stats",
+          ipAddress: getClientIp(req.header("x-forwarded-for"), req.ip),
+          userAgent: req.header("user-agent"),
+        });
+      }
+      res.json(await getPatientStats());
+    } catch (error) {
+      next(error);
     }
-    res.json(getPatientStats());
   });
   app.use("/api", api);
 
@@ -119,6 +124,14 @@ export async function createApp() {
 }
 
 async function startServer() {
+  // Single replica for now, so migrating on boot is safe. With several replicas,
+  // move this to a Railway pre-deploy command (`npm run db:migrate`).
+  await runMigrations();
+  if (process.env.SEED_DEMO_DATA !== "false") {
+    const seeded = await seedDemoPatientsIfEmpty();
+    if (seeded > 0) console.log(`Seeded ${seeded} demo patients`);
+  }
+  console.log(`Database ready (${dbDriver})`);
   const app = await createApp();
   app.listen(config.port, config.host, () => {
     console.log(`Server running on http://localhost:${config.port}`);
@@ -126,5 +139,8 @@ async function startServer() {
 }
 
 if (!config.isTest) {
-  startServer();
+  startServer().catch((error) => {
+    console.error("Failed to start server", error);
+    process.exit(1);
+  });
 }
