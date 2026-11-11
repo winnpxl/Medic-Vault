@@ -1,4 +1,5 @@
-import { db } from "../database";
+import { db } from "../db/client";
+import { auditLogs } from "../db/schema";
 
 type AuditEvent = {
   actorUid: string;
@@ -12,39 +13,15 @@ type AuditEvent = {
   userAgent?: string;
 };
 
-const insertAuditLog = db.prepare(`
-  INSERT INTO audit_logs (
-    actor_uid,
-    actor_email,
-    actor_role,
-    action,
-    resource_type,
-    resource_id,
-    metadata_json,
-    ip_address,
-    user_agent
-  ) VALUES (
-    @actorUid,
-    @actorEmail,
-    @actorRole,
-    @action,
-    @resourceType,
-    @resourceId,
-    @metadataJson,
-    @ipAddress,
-    @userAgent
-  )
-`);
-
-export function logAuditEvent(event: AuditEvent): void {
-  insertAuditLog.run({
+export async function logAuditEvent(event: AuditEvent): Promise<void> {
+  await db.insert(auditLogs).values({
     actorUid: event.actorUid,
     actorEmail: event.actorEmail ?? null,
     actorRole: event.actorRole,
     action: event.action,
     resourceType: event.resourceType,
     resourceId: event.resourceId ?? null,
-    metadataJson: event.metadata ? JSON.stringify(event.metadata) : null,
+    metadata: event.metadata ?? null,
     ipAddress: event.ipAddress ?? null,
     userAgent: event.userAgent ?? null,
   });

@@ -20,7 +20,7 @@ A modern medical records management system built with React, TypeScript, Vite, a
 - **Icons**: Lucide React
 - **Animations**: Motion (Framer Motion)
 - **Backend**: Express.js, Node.js
-- **Database**: Better-SQLite3 (for future use)
+- **Database**: PostgreSQL via Drizzle ORM (Railway Postgres in production, in-process PGlite for local dev and tests)
 
 ## Project Structure
 
