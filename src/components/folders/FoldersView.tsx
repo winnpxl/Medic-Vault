@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Globe, MoreHorizontal, Share2, Trash2 } from 'lucide-react';
 
-interface PublicFolder {
+export interface PublicFolder {
   id: string;
   name: string;
   files: number;
@@ -13,7 +13,7 @@ interface PublicFolder {
 }
 
 interface FoldersViewProps {
-  onFolderSelect: (folder: { name: string; files: number; expiry: string; views: number }) => void;
+  onFolderSelect: (folder: PublicFolder) => void;
   onShowToast: (type: 'success' | 'error' | 'info', message: string) => void;
   onCreateFolder: () => void;
 }

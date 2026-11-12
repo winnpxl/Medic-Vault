@@ -32,13 +32,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set a maximum timeout for initial load (2 seconds)
-    const loadingTimeout = setTimeout(() => {
-      if (loading) {
-        setLoading(false);
-      }
-    }, 2000);
-
+    // `loading` stays true until Firebase reports the initial auth state AND the
+    // profile (with role) has loaded. A fixed timeout here used to end loading
+    // early, so a signed-in user was briefly treated as signed out (login screen
+    // flash, data not fetched). onAuthStateChanged always fires once on startup.
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       try {
         if (firebaseUser) {
@@ -68,15 +65,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         console.error('Error loading user:', error);
         setUser(null);
       } finally {
-        clearTimeout(loadingTimeout);
         setLoading(false);
       }
     });
 
-    return () => {
-      clearTimeout(loadingTimeout);
-      unsubscribe();
-    };
+    return unsubscribe;
   }, []);
 
   const signUp = async (email: string, password: string, displayName: string, role: UserRole) => {
