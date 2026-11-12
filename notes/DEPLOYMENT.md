@@ -33,15 +33,14 @@ Rolling back: redeploy an earlier deployment from the Railway dashboard (Deploym
 
 - Project `medic-vault`, service `medic-vault`, environment `production`.
 - Source is GitHub `winnpxl/Medic-Vault`, branch `main`. The Railway GitHub App must have access to the repo.
-- Service config is **Infrastructure as Code** in `.railway/railway.ts` (replaces the deprecated `railway.json`): build (`npm run build`), start (`npm start`), `/health` healthcheck, restart on failure (5 retries), region, the `Postgres` database and the old `/data` volume.
-  - Preview changes with `railway config plan` (read-only); apply with `railway config apply`. Always read the plan first: removing the volume from the file would detach it.
+- Service config is **Infrastructure as Code** in `.railway/railway.ts` (replaces the deprecated `railway.json`): build (`npm run build`), start (`npm start`), `/health` healthcheck, restart on failure (5 retries), region and the `Postgres` database.
+  - Preview changes with `railway config plan` (read-only); apply with `railway config apply`. Always read the plan first: removing a resource (e.g. the `Postgres` database) from the file would destroy it and its data.
   - Env vars are **not** managed by the file (`variables: { managed: false }`); set them in the Railway dashboard or with `railway variables`.
   - The `railway` npm package (dev dependency) is the SDK the file imports.
 - Region: **EU West (Amsterdam, `europe-west4`)**, chosen as the closest Railway region to Nigeria. Change with `railway scale eu-west=1 us-west=0` (scale the old region to 0 in the same command). Keep Postgres in the same region.
 - **Database:** Railway Postgres service `Postgres`, same region, reached over the private network through `DATABASE_URL`.
   - On boot the server applies pending migrations from `drizzle/` and seeds the 50 demo patients from `src/patients.json` if the table is empty (set `SEED_DEMO_DATA=false` to skip).
   - Backups: Railway Postgres has volume backups in the dashboard (Postgres → Backups). Turn on a schedule before real data.
-- Volume `medic-vault-volume` (`/data`) held the old SQLite database. The app no longer uses it; remove it from `.railway/railway.ts` once Postgres is confirmed.
 
 ### Environment variables (Railway)
 
