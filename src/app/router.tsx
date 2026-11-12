@@ -1,22 +1,27 @@
+import { lazy, Suspense, type ComponentType, type ReactNode } from 'react';
 import { createBrowserRouter, Navigate, Outlet, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
-import { LandingPage } from '../components/landing/LandingPage';
-import { AuthScreen } from '../components/auth/AuthScreen';
-import { AppLayout } from './AppLayout';
+import { hasPersistedSession } from '../lib/session';
 import { paths } from './paths';
-import {
-  ActivityPage,
-  DashboardPage,
-  DepartmentDetailPage,
-  DepartmentFolderPage,
-  DepartmentsPage,
-  PatientProfilePage,
-  PatientsPage,
-  PlaceholderPage,
-  PublicFolderPage,
-  PublicFoldersPage,
-  SettingsPage,
-} from './pages';
+
+// Code splitting: the landing page, the login screen and the signed-in app each load
+// as separate chunks, so visitors only download what they're about to see.
+const LandingPage = lazy(() => import('../components/landing/LandingPage').then((m) => ({ default: m.LandingPage })));
+const AuthScreen = lazy(() => import('../components/auth/AuthScreen').then((m) => ({ default: m.AuthScreen })));
+const AppLayout = lazy(() => import('./AppLayout').then((m) => ({ default: m.AppLayout })));
+const page = (name: keyof typeof import('./pages')) =>
+  lazy(() => import('./pages').then((m) => ({ default: m[name] as ComponentType })));
+const DashboardPage = page('DashboardPage');
+const PatientsPage = page('PatientsPage');
+const PatientProfilePage = page('PatientProfilePage');
+const DepartmentsPage = page('DepartmentsPage');
+const DepartmentDetailPage = page('DepartmentDetailPage');
+const DepartmentFolderPage = page('DepartmentFolderPage');
+const PublicFoldersPage = page('PublicFoldersPage');
+const PublicFolderPage = page('PublicFolderPage');
+const ActivityPage = page('ActivityPage');
+const SettingsPage = page('SettingsPage');
+const PlaceholderPage = page('PlaceholderPage');
 
 function FullScreenLoader() {
   return (
@@ -29,6 +34,25 @@ function FullScreenLoader() {
         <p className="text-sm text-gray-400">Loading...</p>
       </div>
     </div>
+  );
+}
+
+function Loadable({ children }: { children: ReactNode }) {
+  return <Suspense fallback={<FullScreenLoader />}>{children}</Suspense>;
+}
+
+/** Inside the app shell: keep the sidebar visible and show a small spinner for the page. */
+function PageLoadable({ children }: { children: ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-full items-center justify-center py-24">
+          <div className="w-8 h-8 border-4 border-orange-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
   );
 }
 
@@ -49,12 +73,18 @@ function RequireAuth() {
 }
 
 function LandingRoute() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
-  if (user) {
+  // A returning user (saved Firebase login) goes straight to the app's loading
+  // screen instead of seeing the landing page while the session is re-validated.
+  if (user || (loading && hasPersistedSession())) {
     return <Navigate to={paths.dashboard()} replace />;
   }
-  return <LandingPage onEnter={() => navigate('/login')} />;
+  return (
+    <Loadable>
+      <LandingPage onEnter={() => navigate('/login')} />
+    </Loadable>
+  );
 }
 
 function LoginRoute() {
@@ -68,7 +98,11 @@ function LoginRoute() {
   if (loading) {
     return <FullScreenLoader />;
   }
-  return <AuthScreen onBack={() => navigate('/')} />;
+  return (
+    <Loadable>
+      <AuthScreen onBack={() => navigate('/')} />
+    </Loadable>
+  );
 }
 
 export function createAppRouter() {
@@ -80,19 +114,23 @@ export function createAppRouter() {
       element: <RequireAuth />,
       children: [
         {
-          element: <AppLayout />,
+          element: (
+            <Loadable>
+              <AppLayout />
+            </Loadable>
+          ),
           children: [
-            { index: true, element: <DashboardPage /> },
-            { path: 'patients', element: <PatientsPage /> },
-            { path: 'patients/:patientId', element: <PatientProfilePage /> },
-            { path: 'departments', element: <DepartmentsPage /> },
-            { path: 'departments/:deptName', element: <DepartmentDetailPage /> },
-            { path: 'departments/:deptName/folders/:folderName', element: <DepartmentFolderPage /> },
-            { path: 'folders', element: <PublicFoldersPage /> },
-            { path: 'folders/:folderId', element: <PublicFolderPage /> },
-            { path: 'activity', element: <ActivityPage /> },
-            { path: 'settings', element: <SettingsPage /> },
-            { path: ':section', element: <PlaceholderPage /> },
+            { index: true, element: <PageLoadable><DashboardPage /></PageLoadable> },
+            { path: 'patients', element: <PageLoadable><PatientsPage /></PageLoadable> },
+            { path: 'patients/:patientId', element: <PageLoadable><PatientProfilePage /></PageLoadable> },
+            { path: 'departments', element: <PageLoadable><DepartmentsPage /></PageLoadable> },
+            { path: 'departments/:deptName', element: <PageLoadable><DepartmentDetailPage /></PageLoadable> },
+            { path: 'departments/:deptName/folders/:folderName', element: <PageLoadable><DepartmentFolderPage /></PageLoadable> },
+            { path: 'folders', element: <PageLoadable><PublicFoldersPage /></PageLoadable> },
+            { path: 'folders/:folderId', element: <PageLoadable><PublicFolderPage /></PageLoadable> },
+            { path: 'activity', element: <PageLoadable><ActivityPage /></PageLoadable> },
+            { path: 'settings', element: <PageLoadable><SettingsPage /></PageLoadable> },
+            { path: ':section', element: <PageLoadable><PlaceholderPage /></PageLoadable> },
             { path: '*', element: <Navigate to={paths.dashboard()} replace /> },
           ],
         },

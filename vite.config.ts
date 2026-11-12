@@ -10,6 +10,22 @@ export default defineConfig(({mode}) => {
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
+    build: {
+      rollupOptions: {
+        output: {
+          // Long-lived vendor chunks: they change rarely, so browsers keep them cached
+          // across deploys of our own code.
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return undefined;
+            // Firestore is loaded on demand (src/lib/firestore.ts); keep it out of the startup chunk.
+            if (/node_modules\/(@firebase\/firestore|firebase\/firestore)\//.test(id)) return 'firestore';
+            if (/node_modules\/(@firebase|firebase)\//.test(id)) return 'firebase';
+            if (/node_modules\/(react|react-dom|react-router|scheduler|@tanstack)\//.test(id)) return 'react';
+            return undefined;
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

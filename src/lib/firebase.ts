@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, browserLocalPersistence, setPersistence } from 'firebase/auth';
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -11,20 +10,10 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
 
-// Enable persistence for faster subsequent loads
+// Keep the session in localStorage (see lib/session.ts, which reads it to skip the landing page).
 setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.error('Auth persistence error:', error);
-});
-
-// Enable Firestore offline persistence
-enableIndexedDbPersistence(db).catch((error) => {
-  if (error.code === 'failed-precondition') {
-    console.warn('Firestore persistence failed: Multiple tabs open');
-  } else if (error.code === 'unimplemented') {
-    console.warn('Firestore persistence not available in this browser');
-  }
 });
