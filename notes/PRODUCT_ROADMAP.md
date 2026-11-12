@@ -212,7 +212,7 @@ _Make the codebase able to support real, multi-tenant data._
   - Local dev and tests run on PGlite (in-process Postgres); CI and production use real Postgres.
 - [ ] Set up **object storage** (R2/S3): upload/download through short-lived signed URLs, with size and type limits.
 - [ ] Mark everything mock as **"Demo data"** in the UI, or hide it, so nobody mistakes it for real data.
-- [ ] Code-split the bundle: the landing page and the app load separately.
+- [x] Code-split the bundle: the landing page and the app load separately (plus long-lived vendor chunks; Firestore loads on demand).
 - [x] Remove the leftover `data/medic-vault.db` from git.
 - [ ] Drop the unused Google Fonts (Inter/Outfit) if they're confirmed unused.
 

@@ -9,8 +9,10 @@ import {
   GoogleAuthProvider,
   User as FirebaseUser,
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
+import type { DocumentData } from 'firebase/firestore';
+import { auth } from '../lib/firebase';
+import { loadFirestore } from '../lib/firestore';
+import { hasPersistedSession } from '../lib/session';
 import { User, UserRole, AuthContextType } from '../types';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,40 +34,66 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // `loading` stays true until Firebase reports the initial auth state AND the
-    // profile (with role) has loaded. A fixed timeout here used to end loading
-    // early, so a signed-in user was briefly treated as signed out (login screen
-    // flash, data not fetched). onAuthStateChanged always fires once on startup.
+    // Returning user: start downloading Firestore now, in parallel with Firebase
+    // re-validating the session, instead of after it.
+    if (hasPersistedSession()) {
+      loadFirestore().catch(console.error);
+    }
+
+    // `loading` stays true until Firebase reports the initial auth state AND a
+    // profile (with role) is known. onAuthStateChanged always fires once on startup.
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
-      try {
-        if (firebaseUser) {
-          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setUser({
-              uid: firebaseUser.uid,
-              email: firebaseUser.email || '',
-              displayName: userData.displayName || '',
-              role: userData.role || 'staff',
-              createdAt: userData.createdAt || new Date().toISOString(),
-              lastLogin: new Date().toISOString(),
-            });
-            
-            // Update last login asynchronously (don't wait for it)
-            setDoc(
-              doc(db, 'users', firebaseUser.uid),
-              { lastLogin: new Date().toISOString() },
-              { merge: true }
-            ).catch(console.error);
-          }
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Error loading user:', error);
+      if (!firebaseUser) {
         setUser(null);
-      } finally {
         setLoading(false);
+        return;
+      }
+
+      const { fs, db } = await loadFirestore();
+      const ref = fs.doc(db, 'users', firebaseUser.uid);
+      // Ignore results that arrive after the user signed out or switched accounts.
+      const stillCurrent = () => auth.currentUser?.uid === firebaseUser.uid;
+      const toUser = (data: DocumentData): User => ({
+        uid: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        displayName: data.displayName || '',
+        role: data.role || 'staff',
+        createdAt: data.createdAt || new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+      });
+
+      // 1. Profile from Firestore's local cache: instant on a returning visit, so the
+      //    app doesn't wait on a network round trip before rendering. The server
+      //    re-checks the role on every API call, so a stale cached role can't grant access.
+      let haveProfile = false;
+      try {
+        const cached = await fs.getDocFromCache(ref);
+        if (cached.exists() && stillCurrent()) {
+          setUser(toUser(cached.data()));
+          setLoading(false);
+          haveProfile = true;
+        }
+      } catch {
+        // Not cached yet (first visit on this browser); fall through to the server.
+      }
+
+      // 2. Fresh profile from the server (also refreshes the cache).
+      try {
+        const fresh = await fs.getDocFromServer(ref);
+        if (!stillCurrent()) return;
+        if (fresh.exists()) {
+          setUser(toUser(fresh.data()));
+          // Update last login asynchronously (don't wait for it)
+          fs.setDoc(ref, { lastLogin: new Date().toISOString() }, { merge: true }).catch(console.error);
+        }
+        // No profile document: leave state alone. During sign-up this listener fires
+        // before signUp() has written the profile, and signUp() sets the user itself.
+      } catch (error) {
+        console.error('Error loading user profile:', error);
+        // Offline or Firestore unavailable: keep the cached profile if we had one.
+        if (!haveProfile && stillCurrent()) setUser(null);
+      } finally {
+        if (stillCurrent()) setLoading(false);
       }
     });
 
@@ -83,7 +111,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       lastLogin: new Date().toISOString(),
     };
 
-    await setDoc(doc(db, 'users', userCredential.user.uid), newUser);
+    const { fs, db } = await loadFirestore();
+    await fs.setDoc(fs.doc(db, 'users', userCredential.user.uid), newUser);
     setUser(newUser);
   };
 
@@ -106,7 +135,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const firebaseUser = result.user;
 
     // Check if user exists in Firestore
-    const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+    const { fs, db } = await loadFirestore();
+    const userDoc = await fs.getDoc(fs.doc(db, 'users', firebaseUser.uid));
     
     if (!userDoc.exists()) {
       // Create new user document for first-time Google sign-in
@@ -118,7 +148,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         createdAt: new Date().toISOString(),
         lastLogin: new Date().toISOString(),
       };
-      await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
+      await fs.setDoc(fs.doc(db, 'users', firebaseUser.uid), newUser);
       setUser(newUser);
     }
   };
