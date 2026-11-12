@@ -1,34 +1,31 @@
 import { Patient, Stats } from '../types';
 import { auth } from '../lib/firebase';
 
-const getAuthHeaders = async (): Promise<HeadersInit> => {
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
+/** Fetch from the API with the signed-in user's Firebase ID token. */
+async function apiGet<T>(path: string): Promise<T> {
   const user = auth.currentUser;
   if (!user) {
-    throw new Error('Not authenticated');
+    throw new ApiError('Not authenticated', 401);
   }
   const token = await user.getIdToken();
-  return {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  };
-};
-
-export const fetchPatients = async (): Promise<Patient[]> => {
-  const response = await fetch('/api/patients', {
-    headers: await getAuthHeaders(),
+  const response = await fetch(path, {
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
   });
   if (!response.ok) {
-    throw new Error(`Failed to fetch patients (${response.status})`);
+    throw new ApiError(`Request to ${path} failed (${response.status})`, response.status);
   }
-  return response.json();
-};
+  return response.json() as Promise<T>;
+}
 
-export const fetchStats = async (): Promise<Stats> => {
-  const response = await fetch('/api/stats', {
-    headers: await getAuthHeaders(),
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch stats (${response.status})`);
-  }
-  return response.json();
-};
+export const fetchPatients = (): Promise<Patient[]> => apiGet<Patient[]>('/api/patients');
+
+export const fetchStats = (): Promise<Stats> => apiGet<Stats>('/api/stats');

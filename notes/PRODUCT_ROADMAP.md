@@ -206,8 +206,8 @@ Each phase ships to production behind the previous one and has a clear **"done w
 _Make the codebase able to support real, multi-tenant data._
 
 - [x] Migrate `railway.json` to `.railway/railway.ts` **(deadline: 2026-12-01)**.
-- [ ] Add **React Router**, with a URL for every screen (`/app/:orgSlug/patients/:id`, …).
-- [ ] Add **TanStack Query**, with one API client that sends the auth token and the active org.
+- [x] Add **React Router**, with a URL for every screen (`/app/patients/:id`, …; the `:orgSlug` segment arrives in Phase 1 via `src/app/paths.ts`).
+- [x] Add **TanStack Query**, with one API client that sends the auth token (the active org is added in Phase 1).
 - [x] Provision **Railway Postgres** (same project and region as the API). Add **Drizzle**, migrations and a seed script for demo data.
   - Local dev and tests run on PGlite (in-process Postgres); CI and production use real Postgres.
 - [ ] Set up **object storage** (R2/S3): upload/download through short-lived signed URLs, with size and type limits.

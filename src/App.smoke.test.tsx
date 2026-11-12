@@ -12,23 +12,31 @@ vi.mock("./api/patients", () => ({
   fetchStats: () => mockFetchStats(),
 }));
 
+const adminUser = {
+  uid: "smoke-user-1",
+  email: "admin@example.com",
+  displayName: "Smoke Admin",
+  role: "super_admin",
+  createdAt: new Date().toISOString(),
+  lastLogin: new Date().toISOString(),
+};
+let mockUser: typeof adminUser | null = adminUser;
+
 vi.mock("./contexts/AuthContext", () => ({
   AuthProvider: ({ children }: { children: ReactNode }) => children,
   useAuth: () => ({
-    user: {
-      uid: "smoke-user-1",
-      email: "admin@example.com",
-      displayName: "Smoke Admin",
-      role: "super_admin",
-      createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString(),
-    },
+    user: mockUser,
     loading: false,
     signOut: vi.fn(),
+    signIn: vi.fn(),
+    signUp: vi.fn(),
+    resetPassword: vi.fn(),
+    signInWithGoogle: vi.fn(),
   }),
 }));
 
-vi.mock("motion/react", () => ({
+vi.mock("motion/react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("motion/react")>()),
   AnimatePresence: ({ children }: { children: ReactNode }) => children,
 }));
 
@@ -36,6 +44,8 @@ import App from "./App";
 
 describe("app smoke flow", () => {
   beforeEach(() => {
+    mockUser = adminUser;
+    window.history.replaceState(null, "", "/");
     mockFetchPatients.mockReset();
     mockFetchStats.mockReset();
 
@@ -73,5 +83,28 @@ describe("app smoke flow", () => {
       expect(screen.getByText("Patient ID")).toBeInTheDocument();
       expect(screen.getByText("PT000001")).toBeInTheDocument();
     });
+    expect(window.location.pathname).toBe("/app/patients/PT000001");
+  });
+
+  it("opens a patient profile directly from its URL", async () => {
+    window.history.replaceState(null, "", "/app/patients/PT000001");
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Patient ID")).toBeInTheDocument();
+      expect(screen.getByText("PT000001")).toBeInTheDocument();
+    });
+  });
+
+  it("sends signed-out visitors from /app to the login screen", async () => {
+    mockUser = null;
+    window.history.replaceState(null, "", "/app/patients");
+    const { container } = render(<App />);
+
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/login");
+      expect(container.querySelector('input[type="email"]')).not.toBeNull();
+    });
+    expect(mockFetchPatients).not.toHaveBeenCalled();
   });
 });
