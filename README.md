@@ -61,10 +61,10 @@ npm install
 
 2. Set up environment variables (optional):
 ```bash
-cp .env.example .env.local
+cp .env.example .env
 ```
 
-Edit `.env.local` and add your Gemini API key if needed.
+Edit `.env` and add your Gemini API key if needed. The server loads `.env` only (via `dotenv`), so other names such as `.env.local` are ignored.
 
 ### Development
 
@@ -78,7 +78,7 @@ This will start:
 - Vite dev server with HMR
 - API endpoints at `/api/*`
 
-The app will be available at `http://localhost:3000`
+The app will be available at `http://localhost:3000`. Set `PORT` in `.env` to use a different port.
 
 ### Building for Production
 
@@ -110,6 +110,11 @@ npm run lint
 - `npm run dev:vite` - Start Vite dev server only (for frontend development)
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
+- `npm test` - Run the test suite (Vitest)
+- `npm run db:generate` - Generate Drizzle migrations from the schema
+- `npm run db:migrate` - Apply database migrations
+- `npm run db:seed` - Seed the database
+- `npm run db:studio` - Open Drizzle Studio
 - `npm run clean` - Clean build directory
 - `npm run lint` - Run TypeScript type checking
 
