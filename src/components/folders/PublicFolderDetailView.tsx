@@ -9,7 +9,10 @@ import {
   FileText,
   Clock,
   Eye,
+  SearchX,
+  X,
 } from 'lucide-react';
+import { EmptyState } from '../common/EmptyState';
 
 interface PublicFolderDetailViewProps {
   folder: {
@@ -211,12 +214,23 @@ export function PublicFolderDetailView({
                 </tr>
               ))
             ) : (
-              <tr>
+              <tr className="hover:bg-transparent">
                 <td colSpan={7} className="px-6">
-                  <div className="empty-state-page flex-col gap-3 text-gray-500">
-                    <FileText className="w-12 h-12 opacity-20" />
-                    <p className="text-sm">No files found</p>
-                  </div>
+                  {searchQuery ? (
+                    <EmptyState
+                      icon={SearchX}
+                      title="No matching files"
+                      description={`Nothing in this folder matches "${searchQuery}".`}
+                      primaryAction={{ label: 'Clear search', icon: X, onClick: () => setSearchQuery('') }}
+                    />
+                  ) : (
+                    <EmptyState
+                      icon={FileText}
+                      title="This folder is empty"
+                      description="Upload files to share them with anyone who has access to this folder."
+                      primaryAction={{ label: 'Upload file', icon: Upload, onClick: onUploadFile }}
+                    />
+                  )}
                 </td>
               </tr>
             )}

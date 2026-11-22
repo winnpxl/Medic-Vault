@@ -156,6 +156,13 @@ export function DashboardView({
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={goToPage}
+          hasActiveFilters={totalPatients > 0 || !!searchQuery || !!statusFilter}
+          onClearFilters={() => {
+            onSearchChange('');
+            onStatusFilterChange(null);
+            setCurrentPage(1);
+          }}
+          onAddPatient={onAddPatient}
         />
       </section>
     </div>

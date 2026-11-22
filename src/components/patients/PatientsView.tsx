@@ -180,6 +180,14 @@ export function PatientsView({
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={goToPage}
+          hasActiveFilters={totalPatients > 0 || !!searchQuery || !!statusFilter || !!departmentFilter}
+          onClearFilters={() => {
+            onSearchChange('');
+            setStatusFilter(null);
+            setDepartmentFilter(null);
+            setCurrentPage(1);
+          }}
+          onAddPatient={onAddPatient}
         />
       </section>
     </div>

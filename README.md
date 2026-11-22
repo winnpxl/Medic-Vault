@@ -28,7 +28,7 @@ A modern medical records management system built with React, TypeScript, Vite, a
 src/
 ├── api/                 # API calls and data fetching
 ├── components/
-│   ├── common/          # Reusable UI components (StatCard, DefaultView)
+│   ├── common/          # Reusable UI components (StatCard, EmptyState, Toast)
 │   ├── dashboard/       # Dashboard-specific components
 │   ├── departments/     # Department views and management
 │   ├── folders/         # Public folder management

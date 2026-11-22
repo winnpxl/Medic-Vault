@@ -11,9 +11,12 @@ import {
   Clock,
   User,
   Shield,
-  Activity as ActivityIcon
+  Activity as ActivityIcon,
+  SearchX,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { EmptyState } from '../common/EmptyState';
 
 interface AuditLog {
   id: string;
@@ -170,6 +173,30 @@ export function ActivityAuditView() {
 
     return matchesSearch && matchesStatus && matchesAction;
   });
+
+  const hasActiveFilters = !!searchQuery || !!statusFilter || !!actionFilter;
+  const emptyState = hasActiveFilters ? (
+    <EmptyState
+      icon={SearchX}
+      title="No matching activity"
+      description="No audit entries match your search or filters. Try widening them, or clear them to see the full log."
+      primaryAction={{
+        label: 'Clear filters',
+        icon: X,
+        onClick: () => {
+          setSearchQuery('');
+          setStatusFilter(null);
+          setActionFilter(null);
+        },
+      }}
+    />
+  ) : (
+    <EmptyState
+      icon={ActivityIcon}
+      title="No activity yet"
+      description="Sign-ins, file views, shares and emergency access will be recorded here as they happen."
+    />
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -459,19 +486,7 @@ export function ActivityAuditView() {
             );
           })}
 
-          {filteredLogs.length === 0 && (
-            <div className="empty-state-page">
-              <div className="glass-card p-12 text-center w-full max-w-xl">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ActivityIcon className="w-8 h-8 text-gray-500" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">No audit logs found</h3>
-                <p className="text-sm text-gray-400">
-                  Try adjusting your filters or search query
-                </p>
-              </div>
-            </div>
-          )}
+          {filteredLogs.length === 0 && <div className="glass-card">{emptyState}</div>}
         </div>
       )}
 
@@ -518,19 +533,7 @@ export function ActivityAuditView() {
             </tbody>
           </table>
 
-          {filteredLogs.length === 0 && (
-            <div className="empty-state-page">
-              <div className="text-center w-full max-w-xl">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ActivityIcon className="w-8 h-8 text-gray-500" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">No audit logs found</h3>
-                <p className="text-sm text-gray-400">
-                  Try adjusting your filters or search query
-                </p>
-              </div>
-            </div>
-          )}
+          {filteredLogs.length === 0 && emptyState}
         </div>
       )}
     </div>

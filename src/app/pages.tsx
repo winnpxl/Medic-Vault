@@ -13,7 +13,8 @@ import { FoldersView, type PublicFolder } from '../components/folders/FoldersVie
 import { PublicFolderDetailView } from '../components/folders/PublicFolderDetailView';
 import { SettingsView } from '../components/settings/SettingsView';
 import { ActivityAuditView } from '../components/activity/ActivityAuditView';
-import { DefaultView } from '../components/common/DefaultView';
+import { FileQuestion, FolderX, Loader2, UserX } from 'lucide-react';
+import { EmptyState } from '../components/common/EmptyState';
 
 /** Props every patient list view shares. */
 function usePatientListProps(department?: string | null) {
@@ -61,17 +62,21 @@ export function PatientProfilePage() {
   const patient = patients.find((p) => p.id === patientId);
 
   if (!patient) {
-    return (
-      <div className="flex-1 empty-state-page">
-        <div className="text-center max-w-md px-4">
-          <p className="text-gray-400 text-sm">
-            {isPending && isFetching ? 'Loading patient…' : `Patient ${patientId} was not found.`}
-          </p>
-          <button className="mt-4 text-orange-primary text-sm" onClick={() => navigate(paths.patients())}>
-            Back to patients
-          </button>
+    if (isPending && isFetching) {
+      return (
+        <div className="flex-1 empty-state-page text-gray-400 text-sm gap-2">
+          <Loader2 className="w-4 h-4 animate-spin" /> Loading patient…
         </div>
-      </div>
+      );
+    }
+    return (
+      <EmptyState
+        size="page"
+        icon={UserX}
+        title="Patient not found"
+        description={`There's no patient with ID ${patientId}. They may have been archived or deleted.`}
+        primaryAction={{ label: 'Back to patients', onClick: () => navigate(paths.patients()) }}
+      />
     );
   }
 
@@ -150,7 +155,15 @@ export function PublicFolderPage() {
   const folder = (location.state as { folder?: PublicFolder } | null)?.folder ?? findStoredPublicFolder(folderId);
 
   if (!folder) {
-    return <DefaultView activeTab="folders" />;
+    return (
+      <EmptyState
+        size="page"
+        icon={FolderX}
+        title="Folder not found"
+        description="This public folder may have been deleted, or the link is out of date."
+        primaryAction={{ label: 'Back to public folders', onClick: () => navigate(paths.publicFolders()) }}
+      />
+    );
   }
   return (
     <PublicFolderDetailView
@@ -173,5 +186,14 @@ export function SettingsPage() {
 
 export function PlaceholderPage() {
   const { section = '' } = useParams();
-  return <DefaultView activeTab={section} />;
+  const navigate = useNavigate();
+  return (
+    <EmptyState
+      size="page"
+      icon={FileQuestion}
+      title="Page not found"
+      description={<>There's nothing at <span className="font-mono text-gray-300">/app/{section}</span>. Check the link, or head back to the dashboard.</>}
+      primaryAction={{ label: 'Go to dashboard', onClick: () => navigate(paths.dashboard()) }}
+    />
+  );
 }
